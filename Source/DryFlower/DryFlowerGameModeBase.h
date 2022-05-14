@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "EnumHeader.h"
 #include "DryFlowerGameModeBase.generated.h"
 
 /**
@@ -14,4 +15,13 @@ class DRYFLOWER_API ADryFlowerGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	UFUNCTION(BlueprintCallable)
+	void Start();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	TEnumAsByte<EnumHeader::RoomType> roomType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	TSubclassOf<AActor> basicRoom;
 };
