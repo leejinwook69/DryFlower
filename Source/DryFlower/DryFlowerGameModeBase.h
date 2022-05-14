@@ -20,7 +20,7 @@ public:
 	void Start();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
-	TEnumAsByte<EnumHeader::RoomType> roomType;
+	TEnumAsByte<RoomType> roomType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	TSubclassOf<AActor> basicRoom;

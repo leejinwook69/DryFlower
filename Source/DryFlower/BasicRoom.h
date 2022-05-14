@@ -20,7 +20,35 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WallShape)
+	bool leftWall;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WallShape)
+	bool rightWall;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WallShape)
+	bool topWall;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WallShape)
+	bool bottomWall;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DoorShape)
+	bool leftDoor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DoorShape)
+	bool rightDoor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DoorShape)
+	bool topDoor;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DoorShape)
+	bool bottomDoor;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	//UFUNCTION(BlueprintCallable)
+	//void InitialStart();
+
 
 };

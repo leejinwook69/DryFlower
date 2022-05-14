@@ -3,22 +3,33 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameFramework/Actor.h"
+#include "EnumHeader.generated.h"
+
+UCLASS()
+class DRYFLOWER_API AEnumHeader : public AActor
+{
+	GENERATED_BODY()
+	
+public:	
+	// Sets default values for this actor's properties
+	AEnumHeader();
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+};
 
 UENUM()
 enum RoomType
 {
-	corriderRoom		UMETA(DisplayName = "corrider"),
-	playerSpawnRoom		UMETA(DisplayName = "playerSpawn"),
-	enemySpawnRoom		UMETA(DisplayName = "enemySpawn"),
-	exitRoom			UMETA(DisplayName = "exit")
-};
-
-/**
- * 
- */
-class DRYFLOWER_API EnumHeader
-{
-public:
-	EnumHeader();
-	~EnumHeader();
+	corrider		UMETA(DisplayName = "Corrider"),
+	playerSpawn		UMETA(DisplayName = "PlayerSpawn"),
+	enemySpawn		UMETA(DisplayName = "EnemySpawn"),
+	escape			UMETA(DisplayName = "Escape"),
 };
