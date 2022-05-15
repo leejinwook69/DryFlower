@@ -24,4 +24,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	TSubclassOf<AActor> basicRoom;
+
+
 };
