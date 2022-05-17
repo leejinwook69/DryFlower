@@ -1,0 +1,104 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "DryFlower (Debug)",
+			"request": "launch",
+			"preLaunchTask": "DryFlower Mac Debug Build",
+			"program": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Binaries/Mac/UE4-Mac-Debug.app/Contents/MacOS/UE4-Mac-Debug",
+			"args": [
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "DryFlower (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "DryFlower Mac DebugGame Build",
+			"program": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Binaries/Mac/UE4-Mac-DebugGame.app/Contents/MacOS/UE4-Mac-DebugGame",
+			"args": [
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "DryFlower (Development)",
+			"request": "launch",
+			"preLaunchTask": "DryFlower Mac Development Build",
+			"program": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Binaries/Mac/UE4.app/Contents/MacOS/UE4",
+			"args": [
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "DryFlower (Shipping)",
+			"request": "launch",
+			"preLaunchTask": "DryFlower Mac Shipping Build",
+			"program": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Binaries/Mac/UE4-Mac-Shipping.app/Contents/MacOS/UE4-Mac-Shipping",
+			"args": [
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "DryFlower (Test)",
+			"request": "launch",
+			"preLaunchTask": "DryFlower Mac Test Build",
+			"program": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Binaries/Mac/UE4-Mac-Test.app/Contents/MacOS/UE4-Mac-Test",
+			"args": [
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "DryFlowerEditor (Debug)",
+			"request": "launch",
+			"preLaunchTask": "DryFlowerEditor Mac Debug Build",
+			"program": "/Users/Shared/Epic Games/UE_4.27/Engine/Binaries/Mac/UE4Editor-Mac-Debug.app/Contents/MacOS/UE4Editor-Mac-Debug",
+			"args": [
+				"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/DryFlower.uproject"
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "DryFlowerEditor (DebugGame)",
+			"request": "launch",
+			"preLaunchTask": "DryFlowerEditor Mac DebugGame Build",
+			"program": "/Users/Shared/Epic Games/UE_4.27/Engine/Binaries/Mac/UE4Editor-Mac-DebugGame.app/Contents/MacOS/UE4Editor-Mac-DebugGame",
+			"args": [
+				"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/DryFlower.uproject"
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "DryFlowerEditor (Development)",
+			"request": "launch",
+			"preLaunchTask": "DryFlowerEditor Mac Development Build",
+			"program": "/Users/Shared/Epic Games/UE_4.27/Engine/Binaries/Mac/UE4Editor.app/Contents/MacOS/UE4Editor",
+			"args": [
+				"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/DryFlower.uproject"
+			],
+			"cwd": "/Users/Shared/Epic Games/UE_4.27",
+			"type": "lldb"
+		},
+		{
+			"name": "Generate Project Files",
+			"type": "mono",
+			"request": "launch",
+			"program": "/Users/Shared/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe",
+			"console": "internalConsole",
+			"args": [
+				"-projectfiles",
+				"-vscode",
+				"-project=/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/DryFlower.uproject",
+				"-game",
+				"-engine"
+			],
+			"internalConsoleOptions": "openOnSessionStart",
+			"cwd": "/Users/Shared/Epic Games/UE_4.27"
+		}
+	]
+}

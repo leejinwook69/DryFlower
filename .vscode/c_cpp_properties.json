@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "DryFlowerEditor Editor Mac Development (DryFlower)",
+            "intelliSenseMode": "clang-x64",
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Frameworks"
+            ],
+            "compileCommands": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_DryFlower.json",
+            "cStandard": "c17",
+            "cppStandard": "c++98"
+        },
+        {
+            "name": "Mac",
+            "intelliSenseMode": "clang-x64",
+            "macFrameworkPath": [
+                "/System/Library/Frameworks",
+                "/Library/Frameworks"
+            ],
+            "compileCommands": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_Default.json",
+            "cStandard": "c17",
+            "cppStandard": "c++98"
+        }
+    ],
+    "version": 4
+}
