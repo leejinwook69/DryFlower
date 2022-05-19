@@ -10,7 +10,5 @@ public class DryFlowerTarget : TargetRules
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 		ExtraModuleNames.AddRange( new string[] { "DryFlower" } );
-		bOverrideBuildEnvironment = true;
-		AdditionalCompilerArguments = "-Wno-unused-but-set-variable";
 	}
 }

@@ -16,6 +16,7 @@ void ABasicRoom::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	SetActorLocation(FVector(roomNumber % 9 * 1500, roomNumber / 9 * 900, 0), false, 0, ETeleportType::None);
 }
 
 // Called every frame
@@ -25,9 +26,10 @@ void ABasicRoom::Tick(float DeltaTime)
 
 }
 
-void ABasicRoom::InitialStart(bool leftWallExist, bool rightWallExist, bool topWallExist, bool bottomWallExist, 
+void ABasicRoom::InitialStart(int roomNum, bool leftWallExist, bool rightWallExist, bool topWallExist, bool bottomWallExist, 
 						bool leftDoorExist, bool rightDoorExist, bool topDoorExist, bool bottomDoorExist)
 {
+	this->roomNumber = roomNum;
 	this->leftWall = leftWallExist;
 	this->rightWall = rightWallExist;
 	this->topWall = topWallExist;
@@ -36,5 +38,6 @@ void ABasicRoom::InitialStart(bool leftWallExist, bool rightWallExist, bool topW
 	this->rightDoor = rightDoorExist;
 	this->topDoor = topDoorExist;
 	this->bottomDoor = bottomDoorExist;
+
 }
 

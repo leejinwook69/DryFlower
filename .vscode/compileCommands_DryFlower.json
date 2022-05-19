@@ -1,5 +1,15 @@
 [
 	{
+		"file": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Source/DryFlower/BasicRoom.cpp",
+		"command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ @\"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_DryFlower/DryFlower.191.rsp\"",
+		"directory": "/Users/Shared/Epic Games/UE_4.27/Engine/Source"
+	},
+	{
+		"file": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Source/DryFlower/BasicRoom.h",
+		"command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ @\"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_DryFlower/DryFlower.191.rsp\"",
+		"directory": "/Users/Shared/Epic Games/UE_4.27/Engine/Source"
+	},
+	{
 		"file": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Source/DryFlower/DryFlower.Build.cs",
 		"command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ @\"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_DryFlower/DryFlower.191.rsp\"",
 		"directory": "/Users/Shared/Epic Games/UE_4.27/Engine/Source"
@@ -21,6 +31,16 @@
 	},
 	{
 		"file": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Source/DryFlower/DryFlowerGameModeBase.h",
+		"command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ @\"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_DryFlower/DryFlower.191.rsp\"",
+		"directory": "/Users/Shared/Epic Games/UE_4.27/Engine/Source"
+	},
+	{
+		"file": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Source/DryFlower/EnumHeader.cpp",
+		"command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ @\"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_DryFlower/DryFlower.191.rsp\"",
+		"directory": "/Users/Shared/Epic Games/UE_4.27/Engine/Source"
+	},
+	{
+		"file": "/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/Source/DryFlower/EnumHeader.h",
 		"command": "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++ @\"/Users/hwangchanbin/Documents/Unreal Projects/DryFlower/.vscode/compileCommands_DryFlower/DryFlower.191.rsp\"",
 		"directory": "/Users/Shared/Epic Games/UE_4.27/Engine/Source"
 	}
