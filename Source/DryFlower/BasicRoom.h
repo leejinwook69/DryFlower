@@ -44,11 +44,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DoorShape)
 	bool bottomDoor;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Infomation)
+	int roomNumber;
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void InitialStart(bool leftWallExist = true, bool rightWallExist = true, bool topWallExist = true, bool bottomWallExist = true, 
+	void InitialStart(int roomNum, bool leftWallExist = true, bool rightWallExist = true, bool topWallExist = true, bool bottomWallExist = true, 
 						bool leftDoorExist = false, bool rightDoorExist = false, bool topDoorExist = false, bool bottomDoorExist = false);
 
 
