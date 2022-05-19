@@ -139,10 +139,6 @@ Build/Android/res/*/*
 # Ignore plugins binaries on deep subfolders
 Plugins/**/Binaries/*
 Plugins/**/Intermediate/*
-Source/DryFlower.Target.cs
-Source/DryFlowerEditor.Target.cs
 
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,unrealengine,c++
-Source/DryFlower.Target.cs
-Source/DryFlowerEditor.Target.cs
