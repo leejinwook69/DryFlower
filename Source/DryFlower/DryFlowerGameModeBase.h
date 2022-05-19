@@ -32,5 +32,5 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void MakePlayerSpawnRoom();
 
-	void CanMakePlayerSpawnRoom(int x, int y);
+	bool CanMakePlayerSpawnRoom(int x, int y);
 };
