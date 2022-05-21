@@ -10,7 +10,6 @@ void ADryFlowerGameModeBase::Start() //블루프린트 BeginPlay()에서 호출
     /*
     GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("Start!!")); //이 구문이 실행되는지 테스트용 출력
 
-    /*
     for(int i = 0; i < 9; i++)
     {
         for(int j = 0; j < 9; j++)
@@ -28,11 +27,7 @@ void ADryFlowerGameModeBase::Start() //블루프린트 BeginPlay()에서 호출
 void ADryFlowerGameModeBase::MakePlayerSpawnRoom()
 {
     /*
-<<<<<<< Updated upstream
     RoomType rooms[9][9];
-=======
-//    RoomType rooms[9][9];
->>>>>>> Stashed changes
     int startX = 0;
     int startY = 0;
     while(true)
