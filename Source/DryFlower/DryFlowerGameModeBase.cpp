@@ -53,3 +53,17 @@ bool ADryFlowerGameModeBase::CanMakePlayerSpawnRoom(int x, int y)
 
    return true;
 }
+
+
+
+
+//리플리케이션 관련
+void ADryFlowerGameModeBase::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(ADryFlowerGameModeBase, basicRoom);
+    DOREPLIFETIME(ADryFlowerGameModeBase, roomList);
+    DOREPLIFETIME(ADryFlowerGameModeBase, roomInfo);
+
+
+}

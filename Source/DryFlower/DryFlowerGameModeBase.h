@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "EnumHeader.h"
 #include "BasicRoom.h"
+#include "Net/UnrealNetwork.h"
 #include "DryFlowerGameModeBase.generated.h"
 
 /**
@@ -20,10 +21,10 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	//TEnumAsByte<RoomType> roomType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Replicated)
 	TSubclassOf<AActor> basicRoom;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status, Replicated)
 	TArray<ABasicRoom*> roomList;
 
 	UFUNCTION(BlueprintCallable)
@@ -35,6 +36,6 @@ public:
 	bool CanMakePlayerSpawnRoom(int x, int y);
 
 	//TEST
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	FRoomInfo roomInfo;
 };
