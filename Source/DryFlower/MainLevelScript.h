@@ -27,7 +27,19 @@ public:
 	TSubclassOf<AActor> enemySpawnRoom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef)
-	TSubclassOf<AActor> dangerRoom;
+	TSubclassOf<AActor> dangerRoom00;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef)
+	TSubclassOf<AActor> dangerRoom01;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef)
+	TSubclassOf<AActor> dangerRoom02;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef)
+	TSubclassOf<AActor> dangerRoom03;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef)
+	TSubclassOf<AActor> dangerRoom04;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef)
 	TSubclassOf<AActor> escapeRoom;
@@ -53,7 +65,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Algorithm)
 	int maxPlayerSpawn;
 
-	int currentPlayerSpawn;
+	int currentPlayerSpawn = 0;
 	TArray<FRoomInfo*> checkedList;
 
 	//플레이어 스폰룸이 바깥 가장자리로부터 몇 칸까지 생성 허용할지
@@ -66,10 +78,11 @@ public:
 
 	int GetRoomNumberFromIndex(FIntPoint index);
 	void RoomCreateAlgorithm(FRoomInfo *currentRoom, FRoomInfo *priviousRoom);
-	bool CheckTopRoomIsNone(int roomNum);
-	bool CheckBottomRoomIsNone(int roomNum);
-	bool CheckLeftRoomIsNone(int roomNum);
-	bool CheckRightRoomIsNone(int roomNum);
+	void AddAnotherPlayerRoom();
+	bool CheckTopRoomIs(int roomNum, RoomType type);
+	bool CheckBottomRoomIs(int roomNum, RoomType type);
+	bool CheckLeftRoomIs(int roomNum, RoomType type);
+	bool CheckRightRoomIs(int roomNum, RoomType type);
 	bool CheckIsInBound(int roomX, int roomY);
 	bool CanMakePlayerSpawnRoom(int targetRoomNum, int distance);
 };
