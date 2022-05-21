@@ -35,6 +35,7 @@ void AMainLevelScript::InitialRoomSetup()
 
             selectRoom = &roomInfo[GetRoomNumberFromIndex(escapeRoomIndex[rand])];
             selectRoom->roomType = RoomType::escape;
+            UE_LOG(LogTemp, Log, TEXT("Character HP :: %d"), selectRoom->roomType);
             count++;
         }
     }
@@ -43,6 +44,7 @@ void AMainLevelScript::InitialRoomSetup()
     selectRoom = &roomInfo[GetRoomNumberFromIndex(FIntPoint(4, 4))];
     selectRoom->roomType = RoomType::enemySpawn;
     selectRoom->SetWallAndDoor(true, true, true, true, true, true, true, true);
+    UE_LOG(LogTemp, Log, TEXT("Character HP :: %d"), selectRoom->roomType);
     
     //1. 현재 위치에서 상/하/좌/우 중 랜덤 1개를 선택하여 그곳이 None이면 그 방향으로 문 생성, 전진
     //2. 리스트에 있는 다른 방들과 비교해서 XY거리가 3 이상인지 체크
