@@ -20,7 +20,7 @@ void AMainLevelScript::InitialRoomSetup()
     //EscapeRoom 우선 선정. 4개의 모서리 중 중복되지 않게 2개 선택
     //처음 생성된 EscapeRoom을 스타팅 룸 인덱스로 선정
     FIntPoint escapeRoomIndex[4] = {FIntPoint(0, 0), FIntPoint(8, 0), FIntPoint(0, 8), FIntPoint(8, 8)};
-    FRoomInfo *startRoom;
+    FRoomInfo *startRoom = nullptr;
     int rand = 99;
     count = 0;
 
