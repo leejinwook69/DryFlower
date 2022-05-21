@@ -52,4 +52,7 @@ public:
 		MakeSomething, meta = (AllowPrivateAccess = "true"))
 		bool MakeCheck = false; // 캐릭터가 F 실행 중인지 보는 bool
 
+
+	void Die(); // 지금은 임시로 G 눌렀을 때 실행
+
 };
