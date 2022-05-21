@@ -47,5 +47,29 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void InitialRoomSetup();
 
+	//For Algorithm
+
+	//맵에서 생성할 플레이어 스폰 룸 갯수
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Algorithm)
+	int maxPlayerSpawn;
+
+	int currentPlayerSpawn;
+	TArray<FRoomInfo*> checkedList;
+
+	//플레이어 스폰룸이 바깥 가장자리로부터 몇 칸까지 생성 허용할지
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Algorithm)
+	int minBorder;
+
+	//minBorder값으로 지정된 갯수의 방을 만들지 못했을 경우 여기까지 허용
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Algorithm)
+	int maxBorder;
+
 	int GetRoomNumberFromIndex(FIntPoint index);
+	void RoomCreateAlgorithm(FRoomInfo *currentRoom, FRoomInfo *priviousRoom);
+	bool CheckTopRoomIsNone(int roomNum);
+	bool CheckBottomRoomIsNone(int roomNum);
+	bool CheckLeftRoomIsNone(int roomNum);
+	bool CheckRightRoomIsNone(int roomNum);
+	bool CheckIsInBound(int roomX, int roomY);
+	bool CanMakePlayerSpawnRoom(int targetRoomNum, int distance);
 };

@@ -51,8 +51,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DoorShape)
 	bool bottomDoor;
 
-	
-
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
