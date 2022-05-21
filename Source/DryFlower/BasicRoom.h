@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EnumHeader.h"
 #include "BasicRoom.generated.h"
 
 UCLASS()
@@ -20,6 +21,12 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Infomation)
+	int roomNumber;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Infomation)
+	RoomType roomType;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WallShape)
 	bool leftWall;
 
@@ -44,14 +51,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DoorShape)
 	bool bottomDoor;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Infomation)
-	int roomNumber;
+	
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void InitialStart(int roomNum, bool leftWallExist = true, bool rightWallExist = true, bool topWallExist = true, bool bottomWallExist = true, 
+	void InitialStart(int roomNum, RoomType roomTypeData, bool leftWallExist = true, bool rightWallExist = true, bool topWallExist = true, bool bottomWallExist = true, 
 						bool leftDoorExist = false, bool rightDoorExist = false, bool topDoorExist = false, bool bottomDoorExist = false);
 
 

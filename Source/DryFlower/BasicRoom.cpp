@@ -26,10 +26,11 @@ void ABasicRoom::Tick(float DeltaTime)
 
 }
 
-void ABasicRoom::InitialStart(int roomNum, bool leftWallExist, bool rightWallExist, bool topWallExist, bool bottomWallExist, 
+void ABasicRoom::InitialStart(int roomNum, RoomType roomTypeData, bool leftWallExist, bool rightWallExist, bool topWallExist, bool bottomWallExist, 
 						bool leftDoorExist, bool rightDoorExist, bool topDoorExist, bool bottomDoorExist)
 {
 	this->roomNumber = roomNum;
+	this->roomType = roomTypeData;
 	this->leftWall = leftWallExist;
 	this->rightWall = rightWallExist;
 	this->topWall = topWallExist;
