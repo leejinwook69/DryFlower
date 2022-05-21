@@ -7,9 +7,9 @@
 
 void ADryFlowerGameModeBase::Start() //블루프린트 BeginPlay()에서 호출
 {
+    /*
     GEngine->AddOnScreenDebugMessage(-1, 10, FColor::Red, TEXT("Start!!")); //이 구문이 실행되는지 테스트용 출력
 
-    /*
     for(int i = 0; i < 9; i++)
     {
         for(int j = 0; j < 9; j++)
@@ -42,10 +42,14 @@ void ADryFlowerGameModeBase::MakePlayerSpawnRoom()
 
 bool ADryFlowerGameModeBase::CanMakePlayerSpawnRoom(int x, int y)
 {
+    /*
     if(x > 1 && x < 7 && y > 1 && y < 7)
         return false;
     else if(x < 0 || x > 8 || y < 0 || y > 8)
         return false;
     else
         return true;
+    */
+
+   return true;
 }

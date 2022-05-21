@@ -17,8 +17,8 @@ class DRYFLOWER_API ADryFlowerGameModeBase : public AGameModeBase
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
-	TEnumAsByte<RoomType> roomType;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	//TEnumAsByte<RoomType> roomType;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 	TSubclassOf<AActor> basicRoom;
@@ -33,4 +33,8 @@ public:
 	void MakePlayerSpawnRoom();
 
 	bool CanMakePlayerSpawnRoom(int x, int y);
+
+	//TEST
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRoomInfo roomInfo;
 };

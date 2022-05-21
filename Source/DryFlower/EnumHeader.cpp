@@ -24,4 +24,3 @@ void AEnumHeader::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-

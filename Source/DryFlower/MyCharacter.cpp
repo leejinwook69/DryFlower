@@ -76,6 +76,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
 
 	PlayerInputComponent->BindAction("Make", IE_Pressed, this, &AMyCharacter::Make);
+	PlayerInputComponent->BindAction("Die", IE_Pressed, this, &AMyCharacter::Die); //임시임
 }
 
 void AMyCharacter::MoveRight(float Value)
@@ -99,13 +100,13 @@ void AMyCharacter::MoveForward(float Value)
 	}
 }
 
-void AMyCharacter::Make()
+void AMyCharacter::Make() //나중에 Search로 변경
 {
 	//등록된 몽타주 재생
 	if (MakeAnim)
 	{
 		//들어왔나 확인하는 로그 메시지
-		UE_LOG(LogTemp, Log, TEXT("Log Message"));
+		//UE_LOG(LogTemp, Log, TEXT("Log Message"));
 		PlayAnimMontage(MakeAnim, 1.f, FName("start_1"));
 	}
 
@@ -119,4 +120,13 @@ void AMyCharacter::Make()
 			MakeCheck = false;
 
 		}), MakeTime, false);
+}
+
+void AMyCharacter::Die() //캐릭터 죽을 때 나올 애니메이션
+{
+	UE_LOG(LogTemp, Log, TEXT("Log Message"));
+
+	//캐릭터 피직스 시뮬레이트
+	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
+	GetMesh()->SetSimulatePhysics(true);
 }
