@@ -13,16 +13,13 @@ class DRYFLOWER_API AMyCharacter : public ACharacter
 {
 	GENERATED_BODY()
 	//스프링암
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category =
-		MyTPS_Cam, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = MyTPS_Cam, meta = (AllowPrivateAccess = "true"))
 		class USpringArmComponent* CameraBoom;
 	//카메라
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category =
-		MyTPS_Cam, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = MyTPS_Cam, meta = (AllowPrivateAccess = "true"))
 		class UCameraComponent* FollowCamera;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category =
-		Animation, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Animation, meta = (AllowPrivateAccess = "true"))
 		class UAnimMontage* MakeAnim;
 
 public:
@@ -46,13 +43,20 @@ public:
 
 	void Make(); // F 눌렀을 때 실행
 
+	/*
 	FTimerHandle WaitHandle; // 딜레이 주는 시간
 	float MakeTime = 2.0f; // 2초
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category =
-		MakeSomething, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MakeSomething, meta = (AllowPrivateAccess = "true"))
 		bool MakeCheck = false; // 캐릭터가 F 실행 중인지 보는 bool
+	*/
 
+	void Attack(); // 좌클릭 눌렀을 때 실행
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack, meta = (AllowPrivateAccess = "true"))
+		bool IsAttacking = false;
+
+	UFUNCTION(BlueprintCallable, Category = Die)
 	void Die(); // 지금은 임시로 G 눌렀을 때 실행
+	bool DieCheck = false;
 
 };
