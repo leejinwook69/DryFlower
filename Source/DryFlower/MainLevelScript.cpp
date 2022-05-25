@@ -415,3 +415,28 @@ void AMainLevelScript::SpawnRoom(RoomType roomType, FVector3 spawnLocation, )
     UGameplayStatics::FinishSpawningActor(instance, instance->GetTransform()); //스폰 종료
 }
 */
+
+
+//리플리케이션 관련 함수
+void AMainLevelScript::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(AMainLevelScript, corriderRoom);
+    DOREPLIFETIME(AMainLevelScript, playerSpawnRoom);
+    DOREPLIFETIME(AMainLevelScript, enemySpawnRoom);
+    DOREPLIFETIME(AMainLevelScript, dangerRoom00);
+    DOREPLIFETIME(AMainLevelScript, dangerRoom01);
+    DOREPLIFETIME(AMainLevelScript, dangerRoom02);
+    DOREPLIFETIME(AMainLevelScript, dangerRoom03);
+    DOREPLIFETIME(AMainLevelScript, dangerRoom04);
+    DOREPLIFETIME(AMainLevelScript, escapeRoom);
+    DOREPLIFETIME(AMainLevelScript, officeRoom);
+    DOREPLIFETIME(AMainLevelScript, labatoryRoom);
+    DOREPLIFETIME(AMainLevelScript, bathRoom);
+    DOREPLIFETIME(AMainLevelScript, roomInfo);
+    DOREPLIFETIME(AMainLevelScript, maxPlayerSpawn);
+    DOREPLIFETIME(AMainLevelScript, currentPlayerSpawn);
+    //DOREPLIFETIME(AMainLevelScript, checkedList);
+    DOREPLIFETIME(AMainLevelScript, minBorder);
+    DOREPLIFETIME(AMainLevelScript, maxBorder);
+}

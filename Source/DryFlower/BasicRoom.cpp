@@ -42,3 +42,19 @@ void ABasicRoom::InitialStart(int roomNum, RoomType roomTypeData, bool leftWallE
 
 }
 
+//府敲府纳捞记 包访
+void ABasicRoom::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+    DOREPLIFETIME(ABasicRoom, roomNumber);
+    DOREPLIFETIME(ABasicRoom, roomType);
+    DOREPLIFETIME(ABasicRoom, leftWall);
+    DOREPLIFETIME(ABasicRoom, rightWall);
+    DOREPLIFETIME(ABasicRoom, topWall);
+    DOREPLIFETIME(ABasicRoom, bottomWall);
+    DOREPLIFETIME(ABasicRoom, leftDoor);
+    DOREPLIFETIME(ABasicRoom, rightDoor);
+    DOREPLIFETIME(ABasicRoom, topDoor);
+    DOREPLIFETIME(ABasicRoom, bottomDoor);
+
+}
