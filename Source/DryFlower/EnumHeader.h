@@ -48,7 +48,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int roomNumber;
 
-	int maxDoorCount = 3;
+	int maxDoorCount;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	RoomType roomType;

@@ -13,7 +13,9 @@ void AMainLevelScript::InitialRoomSetup()
     //방번호 부여. 초기값 설정 필요하면 이곳에서
     for(auto& elem : roomInfo)
     {
+        elem.SetWallAndDoor(true, true, true, true, false, false, false, false);
         elem.roomNumber = count;
+        elem.maxDoorCount = 4;
         count++;
     }
     //-------------------------------------------------
