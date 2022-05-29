@@ -32,7 +32,7 @@ AMyCharacter::AMyCharacter()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 900.0f;
-	CameraBoom->SetRelativeRotation(FRotator(-70.f, 0.f, 0.f));
+	CameraBoom->SetRelativeRotation(FRotator(-89.f, -90.f, 0.f));
 	CameraBoom->bUsePawnControlRotation = false;
 	CameraBoom->bInheritPitch = false;
 	CameraBoom->bInheritYaw = false;
@@ -77,11 +77,12 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 	PlayerInputComponent->BindAction("Make", IE_Pressed, this, &AMyCharacter::Make);
 	PlayerInputComponent->BindAction("Die", IE_Pressed, this, &AMyCharacter::Die); //임시임
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyCharacter::Attack);
 }
 
 void AMyCharacter::MoveRight(float Value)
 {
-	if (MakeCheck == false)
+	if (DieCheck == false)
 	{
 		const FRotator YawRotation(0, Controller->GetControlRotation().Yaw, 0);
 		const FVector Direction = UKismetMathLibrary::GetRightVector(YawRotation);
@@ -92,7 +93,7 @@ void AMyCharacter::MoveRight(float Value)
 
 void AMyCharacter::MoveForward(float Value)
 {
-	if (MakeCheck == false)
+	if (DieCheck == false)
 	{
 		const FRotator YawRotation(0, Controller->GetControlRotation().Yaw, 0);
 		const FVector Direction = UKismetMathLibrary::GetForwardVector(YawRotation);
@@ -110,6 +111,7 @@ void AMyCharacter::Make() //나중에 Search로 변경
 		PlayAnimMontage(MakeAnim, 1.f, FName("start_1"));
 	}
 
+	/*
 	//만드는 중에 못 움직이게 하기
 	//MakeCheck = true;
 
@@ -120,12 +122,25 @@ void AMyCharacter::Make() //나중에 Search로 변경
 			MakeCheck = false;
 
 		}), MakeTime, false);
+	*/
+}
+
+void AMyCharacter::Attack() //살인마 공격 애니메이션 출력
+{
+	//등록된 몽타주 재생
+	if (IsAttacking == false)
+	{
+		//들어왔나 확인하는 로그 메시지
+		//UE_LOG(LogTemp, Log, TEXT("Log Message"));
+		PlayAnimMontage(MakeAnim, 1.f, FName("start_1"));
+	}
+
 }
 
 void AMyCharacter::Die() //캐릭터 죽을 때 나올 애니메이션
 {
-	UE_LOG(LogTemp, Log, TEXT("Log Message"));
-
+	//UE_LOG(LogTemp, Log, TEXT("Log Message"));
+	DieCheck = true;
 	//캐릭터 피직스 시뮬레이트
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	GetMesh()->SetSimulatePhysics(true);
