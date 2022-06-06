@@ -87,6 +87,12 @@ void AMyCharacter::MoveRight(float Value)
 		const FRotator YawRotation(0, Controller->GetControlRotation().Yaw, 0);
 		const FVector Direction = UKismetMathLibrary::GetRightVector(YawRotation);
 		AddMovementInput(Direction, Value);
+		if (Value != 0.f)
+		{
+			CameraBoom->TargetArmLength = 900.0f;
+			CameraBoom->SetRelativeRotation(FRotator(-89.f, -90.f, 0.f));
+			StopAnimMontage(MakeAnim);
+		}
 	}
 }
 
@@ -98,6 +104,12 @@ void AMyCharacter::MoveForward(float Value)
 		const FRotator YawRotation(0, Controller->GetControlRotation().Yaw, 0);
 		const FVector Direction = UKismetMathLibrary::GetForwardVector(YawRotation);
 		AddMovementInput(Direction, Value);
+		if (Value != 0.f)
+		{
+			CameraBoom->TargetArmLength = 900.0f;
+			CameraBoom->SetRelativeRotation(FRotator(-89.f, -90.f, 0.f));
+			StopAnimMontage(MakeAnim);
+		}
 	}
 }
 
@@ -109,6 +121,9 @@ void AMyCharacter::Make() //나중에 Search로 변경
 		//들어왔나 확인하는 로그 메시지
 		//UE_LOG(LogTemp, Log, TEXT("Log Message"));
 		PlayAnimMontage(MakeAnim, 1.f, FName("start_1"));
+
+		CameraBoom->TargetArmLength = 400.0f;
+		CameraBoom->SetRelativeRotation(FRotator(-60.f, -90.f, 0.f));
 	}
 
 	/*
@@ -125,7 +140,7 @@ void AMyCharacter::Make() //나중에 Search로 변경
 	*/
 }
 
-void AMyCharacter::Attack() //살인마 공격 애니메이션 출력
+void AMyCharacter::Attack() //살인마 공격 애니메이션 출력, 지금은 생존자도 작동함 나중에 나눠야 됨
 {
 	//등록된 몽타주 재생
 	if (IsAttacking == false)

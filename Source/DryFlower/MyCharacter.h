@@ -57,6 +57,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Die)
 	void Die(); // 지금은 임시로 G 눌렀을 때 실행
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Die, meta = (AllowPrivateAccess = "true"))
 	bool DieCheck = false;
 
 };
