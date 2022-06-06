@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/LevelScriptActor.h"
 #include "EnumHeader.h"
+#include "MyCharacter.h"
 #include "Net/UnrealNetwork.h"
 #include "MainLevelScript.generated.h"
 
@@ -56,6 +57,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TArray<FRoomInfo> roomInfo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TArray<AActor*> pawnList;
 
 	UFUNCTION(BlueprintCallable)
 	void InitialRoomSetup();
