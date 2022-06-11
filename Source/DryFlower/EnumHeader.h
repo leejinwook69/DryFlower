@@ -29,14 +29,24 @@ UENUM(BlueprintType)
 enum class RoomType : uint8
 {
 	None			UMETA(DispalyName = "None"),
-	corrider		UMETA(DisplayName = "Corrider"),
-	playerSpawn		UMETA(DisplayName = "PlayerSpawn"),
-	enemySpawn		UMETA(DisplayName = "EnemySpawn"),
-	danger			UMETA(DisplayName = "Danger"),
-	escape			UMETA(DisplayName = "Escape"),
-	office			UMETA(DisplayName = "Office"),
-	labatory		UMETA(DisplayName = "Labatory"),
-	bath			UMETA(DisplayName = "Bath"),
+	Corrider		UMETA(DisplayName = "Corrider"),
+	PlayerSpawn		UMETA(DisplayName = "PlayerSpawn"),
+	EnemySpawn		UMETA(DisplayName = "EnemySpawn"),
+	Danger			UMETA(DisplayName = "Danger"),
+	Escape			UMETA(DisplayName = "Escape"),
+	Office			UMETA(DisplayName = "Office"),
+	Labatory		UMETA(DisplayName = "Labatory"),
+	Bathroom		UMETA(DisplayName = "Bathroom"),
+};
+
+UENUM()
+enum class Arrow : uint8
+{
+	None,
+	Top,
+	Bottom,
+	Left,
+	Right,
 };
 
 USTRUCT(Atomic, BlueprintType)

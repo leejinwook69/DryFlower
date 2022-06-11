@@ -84,13 +84,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Algorithm, Replicated)
 	int maxBorder;
 
-	int GetRoomNumberFromIndex(FIntPoint index);
-	void RoomCreateAlgorithm(FRoomInfo *currentRoom, FRoomInfo *priviousRoom);
-	void AddAnotherPlayerRoom();
-	bool CheckTopRoomIs(int roomNum, RoomType type);
-	bool CheckBottomRoomIs(int roomNum, RoomType type);
-	bool CheckLeftRoomIs(int roomNum, RoomType type);
-	bool CheckRightRoomIs(int roomNum, RoomType type);
-	bool CheckIsInBound(int roomX, int roomY);
-	bool CanMakePlayerSpawnRoom(int targetRoomNum, int distance);
+	void RoomCreateAlgorithm(int currentRoomNum);
+	void AddAnotherPlayerRoom(int distance);
+	bool CheckIsInBound(int roomIndex, Arrow arrow);
+	bool CanMakePlayerSpawnRoom(int currentRoomNum, Arrow arrow, int distance);
+	int GetRoomNum(int currentRoomNum, Arrow arrow);
+	RoomType GetRoomType(int currentRoomNum, Arrow arrow);
+	void SetRoomType(int currentRoomNum, Arrow arrow, RoomType roomType);
+	void SetRoomDoor(int currentRoomNum, Arrow arrow, bool active);
+	void SetRoomWall(int currentRoomNum, Arrow arrow, bool active);
+	bool CheckWallExist(int currentRoomNum, Arrow arrow);
+	void ConnectingTest();
+	int GetDestinationDistance(int currentRoomNum, int destinationRoomNum, int beforeRoomNum);
 };

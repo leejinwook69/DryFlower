@@ -7,7 +7,6 @@ void AMainLevelScript::InitialRoomSetup()
 {
     //초기화
     roomInfo.Init(FRoomInfo(), 81);
-    FRoomInfo *selectRoom = nullptr;
     int roomNum = 99;
     int count = 0;
     //방번호 부여. 초기값 설정 필요하면 이곳에서
@@ -21,8 +20,8 @@ void AMainLevelScript::InitialRoomSetup()
     //-------------------------------------------------
     //EscapeRoom 우선 선정. 4개의 모서리 중 중복되지 않게 2개 선택
     //처음 생성된 EscapeRoom을 스타팅 룸 인덱스로 선정
-    FIntPoint escapeRoomIndex[4] = {FIntPoint(0, 0), FIntPoint(8, 0), FIntPoint(0, 8), FIntPoint(8, 8)};
-    FRoomInfo *startRoom = nullptr;
+    int escapeRoomIndex[4] = {0, 8, 72, 80};
+    int startRoom = 99;
     int rand = 99;
     count = 0;
 
@@ -32,37 +31,31 @@ void AMainLevelScript::InitialRoomSetup()
         if(rand != tempRand)
         {
             rand = tempRand;
-            roomNum = GetRoomNumberFromIndex(escapeRoomIndex[rand]);
+            roomNum = escapeRoomIndex[rand];
 
             if(count == 0)
-                startRoom = &roomInfo[roomNum];
+                startRoom = roomNum;
 
-            selectRoom = &roomInfo[roomNum];
-            selectRoom->roomType = RoomType::escape;
-            selectRoom->maxDoorCount = 1;
-            checkedList.Add(selectRoom);
+            SetRoomType(roomNum, Arrow::None, RoomType::Escape);
             count++;
         }
     }
     //-------------------------------------------------
     //EnemySpawnRoom 선정 (4, 4) 위치 고정
-    roomNum = GetRoomNumberFromIndex(FIntPoint(4, 4));
-    selectRoom = &roomInfo[roomNum];
-    selectRoom->roomType = RoomType::enemySpawn;
-    selectRoom->maxDoorCount = 4;
-    selectRoom->SetWallAndDoor(true, true, true, true, true, true, true, true);
-    checkedList.Add(selectRoom);
+    roomNum = 40;
+    SetRoomType(roomNum, Arrow::None, RoomType::EnemySpawn);
     //-------------------------------------------------
-    //알고리즘 시작
-    RoomCreateAlgorithm(startRoom, nullptr);
-    UE_LOG(LogTemp, Log, TEXT("CurrentPlayerSpawnRoom : %d"), currentPlayerSpawn);
-    for(auto& elem : checkedList)
-    {
-        if(elem->roomType == RoomType::playerSpawn)
-            UE_LOG(LogTemp, Log, TEXT("PlayerSpawnRoom index : [%d, %d]"), elem->roomNumber % 9, elem->roomNumber / 9);
-    }
-    AddAnotherPlayerRoom();
-    UE_LOG(LogTemp, Log, TEXT("CurrentPlayerSpawnRoom : %d"), currentPlayerSpawn);
+    //첫 알고리즘 시작 - 두께 2인 테두리 방에 플레이어 스폰 룸 생성
+    RoomCreateAlgorithm(startRoom);
+    //-------------------------------------------------
+    //플레이어 스폰이 12개가 안됐을 경우, 추가 스폰 알고리즘
+    if(currentPlayerSpawn < maxPlayerSpawn)
+        AddAnotherPlayerRoom(3); //플레이어룸끼리 사이 거리 3으로 시도
+    if(currentPlayerSpawn < maxPlayerSpawn)
+        AddAnotherPlayerRoom(2); //아직도 12개가 안됐을 경우 거리 2로 재시도 (100퍼센트 12개 생성됨)
+    //-------------------------------------------------
+    //복도끼리 막히는 곳 없이 연결되어 있는지 확인하는 알고리즘 (반드시 한 곳은 막혀있어서 필요)
+    ConnectingTest();
     //1. 현재 위치에서 상/하/좌/우 중 랜덤 1개를 선택하여 그곳이 None이면 그 방향으로 문 생성, 전진
     //2. 리스트에 있는 다른 방들과 비교해서 XY거리가 3 이상인지 체크
     //2-T. 해당 방을 PlayerSpawn으로 만들고 리스트에 추가한 뒤 이전 방 방향으로 문 생성, 탈출
@@ -73,20 +66,17 @@ void AMainLevelScript::InitialRoomSetup()
     //UE_LOG(LogTemp, Log, TEXT("start room index : (%d, %d)"), startRoomNum.X, startRoomNum.Y);
 }
 
-void AMainLevelScript::RoomCreateAlgorithm(FRoomInfo *currentRoom, FRoomInfo *priviousRoom)
+void AMainLevelScript::RoomCreateAlgorithm(int currentRoomNum)
 {
-    int currentRoomNum = currentRoom->roomNumber;
-
-    if(currentRoomNum < 0 || currentRoomNum > 81)
-        return;
-    
     TArray<int> visited;
-    while(currentPlayerSpawn < maxPlayerSpawn)
+    int maxDoorCount = roomInfo[currentRoomNum].maxDoorCount;
+
+    while(true)
     {
-        if(currentRoom->maxDoorCount <= 0)
-            return;
+        if(maxDoorCount <= 0)
+            break;
         if(visited.Num() >= 4)
-            return;
+            break;
 
         int rand = FMath::RandRange(0, 3);
         if(visited.Contains(rand))
@@ -96,245 +86,278 @@ void AMainLevelScript::RoomCreateAlgorithm(FRoomInfo *currentRoom, FRoomInfo *pr
         else
         {
             visited.Add(rand);
-            int currentRoomX = currentRoomNum % 9;
-            int currentRoomY = currentRoomNum / 9;
+            Arrow arrow = Arrow::None;
             switch(rand)
             {
                 case 0:
-                    if(CheckIsInBound(currentRoomX, currentRoomY - 1))
-                    {
-                        if(CheckTopRoomIs(currentRoomNum, RoomType::None))
-                        {
-                            FRoomInfo *nextRoom = &roomInfo[currentRoomNum - 9];
-
-                            currentRoom->topDoor = true;
-                            nextRoom->bottomDoor = true;
-
-                            if(CanMakePlayerSpawnRoom(nextRoom->roomNumber, 3))
-                            {
-                                currentPlayerSpawn++;
-                                currentRoom->maxDoorCount--;
-                                nextRoom->maxDoorCount = 0;
-                                nextRoom->roomType = RoomType::playerSpawn;
-                                checkedList.Add(nextRoom);
-                            }
-                            else
-                            {
-                                nextRoom->roomType = RoomType::corrider;
-                                nextRoom->maxDoorCount--;
-                                nextRoom->bottomWall = false;
-                                currentRoom->maxDoorCount--;
-                                currentRoom->topWall = false;
-                            }
-
-                            RoomCreateAlgorithm(nextRoom, currentRoom);
-                        }
-                    }
+                    arrow = Arrow::Top;
                 break;
                 case 1:
-                    if(CheckIsInBound(currentRoomX, currentRoomY + 1))
-                    {
-                        if(CheckBottomRoomIs(currentRoomNum, RoomType::None))
-                        {
-                            FRoomInfo *nextRoom = &roomInfo[currentRoomNum + 9];
-
-                            currentRoom->bottomDoor = true;
-                            nextRoom->topDoor = true;
-
-                            if(CanMakePlayerSpawnRoom(nextRoom->roomNumber, 3))
-                            {
-                                currentPlayerSpawn++;
-                                currentRoom->maxDoorCount--;
-                                nextRoom->maxDoorCount = 0;
-                                nextRoom->roomType = RoomType::playerSpawn;
-                                checkedList.Add(nextRoom);
-                            }
-                            else
-                            {
-                                nextRoom->roomType = RoomType::corrider;
-                                nextRoom->maxDoorCount--;
-                                nextRoom->topWall = false;
-                                currentRoom->maxDoorCount--;
-                                currentRoom->bottomWall = false;
-                            }
-
-                            RoomCreateAlgorithm(nextRoom, currentRoom);
-                        }
-                    }
+                    arrow = Arrow::Bottom;
                 break;
                 case 2:
-                    if(CheckIsInBound(currentRoomX - 1, currentRoomY))
-                    {
-                        if(CheckLeftRoomIs(currentRoomNum, RoomType::None))
-                        {
-                            FRoomInfo *nextRoom = &roomInfo[currentRoomNum - 1];
-
-                            currentRoom->leftDoor = true;
-                            nextRoom->rightDoor = true;
-
-                            if(CanMakePlayerSpawnRoom(nextRoom->roomNumber, 3))
-                            {
-                                currentPlayerSpawn++;
-                                currentRoom->maxDoorCount--;
-                                nextRoom->maxDoorCount = 0;
-                                nextRoom->roomType = RoomType::playerSpawn;
-                                checkedList.Add(nextRoom);
-                            }
-                            else
-                            {
-                                nextRoom->roomType = RoomType::corrider;
-                                nextRoom->maxDoorCount--;
-                                nextRoom->rightWall = false;
-                                currentRoom->maxDoorCount--;
-                                currentRoom->leftWall = false;
-                            }
-
-                            RoomCreateAlgorithm(nextRoom, currentRoom);
-                        }
-                    }
+                    arrow = Arrow::Left;
                 break;
                 case 3:
-                    if(CheckIsInBound(currentRoomX + 1, currentRoomY))
-                    {
-                        if(CheckRightRoomIs(currentRoomNum, RoomType::None))
-                        {
-                            FRoomInfo *nextRoom = &roomInfo[currentRoomNum + 1];
-
-                            currentRoom->rightDoor = true;
-                            nextRoom->leftDoor = true;
-
-                            if(CanMakePlayerSpawnRoom(nextRoom->roomNumber, 3))
-                            {
-                                currentPlayerSpawn++;
-                                currentRoom->maxDoorCount--;
-                                nextRoom->maxDoorCount = 0;
-                                nextRoom->roomType = RoomType::playerSpawn;
-                                checkedList.Add(nextRoom);
-                            }
-                            else
-                            {
-                                nextRoom->roomType = RoomType::corrider;
-                                nextRoom->maxDoorCount--;
-                                nextRoom->leftWall = false;
-                                currentRoom->maxDoorCount--;
-                                currentRoom->rightWall = false;
-                            }
-
-                            RoomCreateAlgorithm(nextRoom, currentRoom);
-                        }
-                    }
+                    arrow = Arrow::Right;
                 break;
                 default:
+                    arrow = Arrow::None;
                 break;
+            }
+
+            if(CheckIsInBound(currentRoomNum, arrow))
+            {
+                int nextRoomNum = GetRoomNum(currentRoomNum, arrow);
+
+                switch(GetRoomType(currentRoomNum, arrow))
+                {
+                    case RoomType::None:
+                    {
+                        if(CanMakePlayerSpawnRoom(currentRoomNum, arrow, 3))
+                            SetRoomType(currentRoomNum, arrow, RoomType::PlayerSpawn);
+                        else
+                            SetRoomType(currentRoomNum, arrow, RoomType::Corrider);
+                        
+                        RoomCreateAlgorithm(nextRoomNum);
+                    }
+                        
+                    break;
+                    case RoomType::Escape:
+                        if(roomInfo[nextRoomNum].maxDoorCount >= 1)
+                            SetRoomDoor(currentRoomNum, arrow, true);
+                    break;
+                    default:
+                    break;
+                }
             }
         }
     }
-    UE_LOG(LogTemp, Log, TEXT("Room Exit. door : %d, visited : %d, playerCount : %d"), currentRoom->maxDoorCount, visited.Num(), currentPlayerSpawn);
     return;
 }
 
-void AMainLevelScript::AddAnotherPlayerRoom()
+void AMainLevelScript::AddAnotherPlayerRoom(int distance)
 {
     //이 함수 너무 드러워서 나중에 수정하기
     int startX = 2;
     int startY = 2;
     int index = 0;
 
-    while(currentPlayerSpawn < maxPlayerSpawn && startY != 7)
+    while(currentPlayerSpawn < maxPlayerSpawn)
     {
         index = startY * 9 + startX;
 
-        if(CanMakePlayerSpawnRoom(index, 2))
+        if(CanMakePlayerSpawnRoom(index, Arrow::None, distance))
         {
-            if(CheckLeftRoomIs(index, RoomType::corrider))
+            if(GetRoomType(index, Arrow::Left) == RoomType::Corrider)
             {
-                if(roomInfo[index - 1].maxDoorCount > 0)
+                FRoomInfo *nextRoom = &roomInfo[GetRoomNum(index, Arrow::Left)];
+
+                if(nextRoom->maxDoorCount > 1)
                 {
-                    roomInfo[index].leftDoor = true;
-                    roomInfo[index].maxDoorCount = 0;
-                    roomInfo[index].roomType = RoomType::playerSpawn;
-                    roomInfo[index - 1].rightDoor = true;
-                    roomInfo[index - 1].maxDoorCount--;
-                    currentPlayerSpawn++;
-                    checkedList.Add(&roomInfo[index]);
+                    SetRoomType(nextRoom->roomNumber, Arrow::Right, RoomType::PlayerSpawn);
                 }
             }
         }
+
+        if(startY == 6)
+            break;
+
         startY++;
     }
-
-    while(currentPlayerSpawn < maxPlayerSpawn && startX != 7)
+    while(currentPlayerSpawn < maxPlayerSpawn)
     {
         index = startY * 9 + startX;
 
-        if(CanMakePlayerSpawnRoom(index, 2))
+        if(CanMakePlayerSpawnRoom(index, Arrow::None, distance))
         {
-            if(CheckLeftRoomIs(index, RoomType::corrider))
+            if(GetRoomType(index, Arrow::Bottom) == RoomType::Corrider)
             {
-                if(roomInfo[index + 9].maxDoorCount > 0)
+                FRoomInfo *nextRoom = &roomInfo[GetRoomNum(index, Arrow::Bottom)];
+
+                if(nextRoom->maxDoorCount > 1)
                 {
-                    roomInfo[index].bottomDoor = true;
-                    roomInfo[index].maxDoorCount = 0;
-                    roomInfo[index].roomType = RoomType::playerSpawn;
-                    roomInfo[index + 9].topDoor = true;
-                    roomInfo[index + 9].maxDoorCount--;
-                    currentPlayerSpawn++;
-                    checkedList.Add(&roomInfo[index]);
+                    SetRoomType(nextRoom->roomNumber, Arrow::Top, RoomType::PlayerSpawn);
                 }
             }
         }
+        
+        if(startX == 6)
+            break;
+
         startX++;
     }
 
-    while(currentPlayerSpawn < maxPlayerSpawn && startY != 1)
+    while(currentPlayerSpawn < maxPlayerSpawn)
     {
         index = startY * 9 + startX;
 
-        if(CanMakePlayerSpawnRoom(index, 2))
+        if(CanMakePlayerSpawnRoom(index, Arrow::None, distance))
         {
-            if(CheckLeftRoomIs(index, RoomType::corrider))
+            if(GetRoomType(index, Arrow::Right) == RoomType::Corrider)
             {
-                if(roomInfo[index + 1].maxDoorCount > 0)
+                FRoomInfo *nextRoom = &roomInfo[GetRoomNum(index, Arrow::Right)];
+
+                if(nextRoom->maxDoorCount > 1)
                 {
-                    roomInfo[index].rightDoor = true;
-                    roomInfo[index].maxDoorCount = 0;
-                    roomInfo[index].roomType = RoomType::playerSpawn;
-                    roomInfo[index + 1].leftDoor = true;
-                    roomInfo[index + 1].maxDoorCount--;
-                    currentPlayerSpawn++;
-                    checkedList.Add(&roomInfo[index]);
+                    SetRoomType(nextRoom->roomNumber, Arrow::Left, RoomType::PlayerSpawn);
                 }
             }
         }
+
+        if(startY == 2)
+            break;
+
         startY--;
     }
 
-    while(currentPlayerSpawn < maxPlayerSpawn && startX != 1)
+    while(currentPlayerSpawn < maxPlayerSpawn)
     {
         index = startY * 9 + startX;
 
-        if(CanMakePlayerSpawnRoom(index, 2))
+        if(CanMakePlayerSpawnRoom(index, Arrow::None, distance))
         {
-            if(CheckLeftRoomIs(index, RoomType::corrider))
+            if(GetRoomType(index, Arrow::Top) == RoomType::Corrider)
             {
-                if(roomInfo[index - 9].maxDoorCount > 0)
+                FRoomInfo *nextRoom = &roomInfo[GetRoomNum(index, Arrow::Top)];
+
+                if(nextRoom->maxDoorCount > 1)
                 {
-                    roomInfo[index].topDoor = true;
-                    roomInfo[index].maxDoorCount = 0;
-                    roomInfo[index].roomType = RoomType::playerSpawn;
-                    roomInfo[index - 9].bottomDoor = true;
-                    roomInfo[index - 9].maxDoorCount--;
-                    currentPlayerSpawn++;
-                    checkedList.Add(&roomInfo[index]);
+                    SetRoomType(nextRoom->roomNumber, Arrow::Bottom, RoomType::PlayerSpawn);
                 }
             }
         }
+        
+        if(startX == 2)
+            break;
+
         startX--;
     }
 }
 
-bool AMainLevelScript::CanMakePlayerSpawnRoom(int targetRoomNum, int distance)
+void AMainLevelScript::ConnectingTest()
 {
+    bool checkList[81] = {false};
+
+    int maxCurrentRoomNum = -1;
+    Arrow maxDestinationRoomArrow = Arrow::None;
+    int maxDistance = -1;
+    
+    for(auto& elem : roomInfo)
+    {
+        if(checkList[elem.roomNumber])
+            continue;
+
+        if(elem.roomType == RoomType::Corrider && elem.maxDoorCount >= 2)
+        {
+            Arrow arrow[4] = {Arrow::Top, Arrow::Bottom, Arrow::Left, Arrow::Right};
+            int currentRoomNum = elem.roomNumber;
+
+            for(int i = 0; i < 4; i++)
+            {
+                if(CheckIsInBound(currentRoomNum, arrow[i]))
+                {
+                    int destinationRoomNum = GetRoomNum(currentRoomNum, arrow[i]);
+
+                    if(GetRoomType(currentRoomNum, arrow[i]) == RoomType::Corrider && CheckWallExist(currentRoomNum, arrow[i]))
+                    {   
+                        int distance = GetDestinationDistance(currentRoomNum, destinationRoomNum, 99);
+                        
+                        if(distance > maxDistance)
+                        {
+                            maxCurrentRoomNum = currentRoomNum;
+                            maxDestinationRoomArrow = arrow[i];
+                            maxDistance = distance;
+                        }
+
+                        checkList[currentRoomNum] = true;
+                        checkList[destinationRoomNum] = true;
+                    }
+                }
+            }
+        }
+    }
+    SetRoomWall(maxCurrentRoomNum, maxDestinationRoomArrow, false);
+    SetRoomDoor(maxCurrentRoomNum, maxDestinationRoomArrow, true);
+}
+
+int AMainLevelScript::GetDestinationDistance(int currentRoomNum, int destinationRoomNum, int beforeRoomNum)
+{
+    if(currentRoomNum < 0 || currentRoomNum > 80)
+        return 0;
+
+    if(currentRoomNum == destinationRoomNum)
+        return 1;
+
+    Arrow arrow[4] = {Arrow::Top, Arrow::Bottom, Arrow::Left, Arrow::Right};
+
+    UE_LOG(LogTemp, Log, TEXT("currentNum : %d"), currentRoomNum);
+    UE_LOG(LogTemp, Log, TEXT("destinationNum : %d"), destinationRoomNum);
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(CheckIsInBound(currentRoomNum, arrow[i]))
+        {
+            int nextRoomNum = GetRoomNum(currentRoomNum, arrow[i]);
+
+            if(nextRoomNum == beforeRoomNum)
+                continue;
+
+            if(GetRoomType(currentRoomNum, arrow[i]) == RoomType::Corrider)
+            {
+                if(CheckWallExist(currentRoomNum, arrow[i]))
+                    continue;
+                else
+                {
+                    int distance = GetDestinationDistance(nextRoomNum, destinationRoomNum, currentRoomNum);
+
+                    if(distance > 0)
+                        return distance + 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+bool AMainLevelScript::CheckIsInBound(int roomIndex, Arrow arrow)
+{
+    if(roomIndex < 0 || roomIndex > 80)
+        return false;
+
+    int roomX = roomIndex % 9;
+    int roomY = roomIndex / 9;
+
+    switch(arrow)
+    {
+        case Arrow::Top:
+            roomY--;
+        break;
+        case Arrow::Bottom:
+            roomY++;
+        break;
+        case Arrow::Left:
+            roomX--;
+        break;
+        case Arrow::Right:
+            roomX++;
+        break;
+        default:
+        break;
+    }
+
+    if(roomX < 0 || roomX > 8 || roomY < 0 || roomY > 8)
+        return false;
+    else if(roomX >= minBorder && roomX <= 8 - minBorder && roomY >= minBorder && roomY <= 8 - minBorder)
+        return false;
+    else
+        return true;
+}
+
+bool AMainLevelScript::CanMakePlayerSpawnRoom(int currentRoomNum, Arrow arrow, int distance)
+{
+    int targetRoomNum = GetRoomNum(currentRoomNum, arrow);
+
     int targetX = targetRoomNum % 9;
     int targetY = targetRoomNum / 9;
 
@@ -350,74 +373,155 @@ bool AMainLevelScript::CanMakePlayerSpawnRoom(int targetRoomNum, int distance)
     return true;
 }
 
-int AMainLevelScript::GetRoomNumberFromIndex(FIntPoint index)
+int AMainLevelScript::GetRoomNum(int currentRoomNum, Arrow arrow)
 {
-    return index.Y * 9 + index.X;
+    switch(arrow)
+    {
+        case Arrow::Top:
+            return currentRoomNum - 9;
+        break;
+        case Arrow::Bottom:
+            return currentRoomNum + 9;
+        break;
+        case Arrow::Left:
+            return currentRoomNum - 1;
+        break;
+        case Arrow::Right:
+            return currentRoomNum + 1;
+        break;
+        default:
+            return currentRoomNum;
+        break;
+    }
 }
 
-bool AMainLevelScript::CheckTopRoomIs(int roomNum, RoomType type)
+RoomType AMainLevelScript::GetRoomType(int currentRoomNum, Arrow arrow)
 {
-    if(roomNum / 9 == 0)
-        return false;
+    return roomInfo[GetRoomNum(currentRoomNum, arrow)].roomType;
+}
 
-    if(roomInfo[roomNum - 9].roomType == type)
-        return true;
+void AMainLevelScript::SetRoomType(int currentRoomNum, Arrow arrow, RoomType roomType)
+{
+    FRoomInfo *currentRoom = &roomInfo[currentRoomNum];
+    FRoomInfo *nextRoom = &roomInfo[GetRoomNum(currentRoomNum, arrow)];
+
+    switch(roomType)
+    {
+        case RoomType::Escape:
+            currentRoom->roomType = RoomType::Escape;
+            currentRoom->maxDoorCount = 1;
+            checkedList.Add(currentRoom);
+        break;
+        case RoomType::EnemySpawn:
+            currentRoom->roomType = RoomType::EnemySpawn;
+        break;
+        case RoomType::PlayerSpawn:
+            SetRoomDoor(currentRoomNum, arrow, true);
+            currentPlayerSpawn++;
+            nextRoom->maxDoorCount = 0;
+            nextRoom->roomType = RoomType::PlayerSpawn;
+            checkedList.Add(nextRoom);
+        break;
+        case RoomType::Corrider:
+            SetRoomWall(currentRoomNum, arrow, false);
+            SetRoomDoor(currentRoomNum, arrow, true);
+            nextRoom->roomType = RoomType::Corrider;
+        break;
+        default:
+        break;
+    }
+}
+
+void AMainLevelScript::SetRoomDoor(int currentRoomNum, Arrow arrow, bool active)
+{
+    FRoomInfo *currentRoom = &roomInfo[currentRoomNum];
+    FRoomInfo *nextRoom = &roomInfo[GetRoomNum(currentRoomNum, arrow)];
+
+    switch(arrow)
+    {
+        case Arrow::Top:
+            currentRoom->topDoor = active;
+            nextRoom->bottomDoor = active;
+        break;
+        case Arrow::Bottom:
+            currentRoom->bottomDoor = active;
+            nextRoom->topDoor = active;
+        break;
+        case Arrow::Left:
+            currentRoom->leftDoor = active;
+            nextRoom->rightDoor = active;
+        break;
+        case Arrow::Right:
+            currentRoom->rightDoor = active;
+            nextRoom->leftDoor = active;
+        break;
+        default:
+        break;
+    }
+
+    if(active)
+    {
+        currentRoom->maxDoorCount--;
+        nextRoom->maxDoorCount--;
+    }
     else
-        return false;
+    {
+        currentRoom->maxDoorCount++;
+        nextRoom->maxDoorCount++;
+    }
 }
 
-bool AMainLevelScript::CheckBottomRoomIs(int roomNum, RoomType type)
+void AMainLevelScript::SetRoomWall(int currentRoomNum, Arrow arrow, bool active)
 {
-    if(roomNum / 9 == 8)
-        return false;
+    FRoomInfo *currentRoom = &roomInfo[currentRoomNum];
+    FRoomInfo *nextRoom = &roomInfo[GetRoomNum(currentRoomNum, arrow)];
 
-    if(roomInfo[roomNum + 9].roomType == type)
-        return true;
-    else
-        return false;
+    switch(arrow)
+    {
+        case Arrow::Top:
+            currentRoom->topWall = active;
+            nextRoom->bottomWall = active;
+        break;
+        case Arrow::Bottom:
+            currentRoom->bottomWall = active;
+            nextRoom->topWall = active;
+        break;
+        case Arrow::Left:
+            currentRoom->leftWall = active;
+            nextRoom->rightWall = active;
+        break;
+        case Arrow::Right:
+            currentRoom->rightWall = active;
+            nextRoom->leftWall = active;
+        break;
+        default:
+        break;
+    }
 }
 
-bool AMainLevelScript::CheckLeftRoomIs(int roomNum, RoomType type)
+bool AMainLevelScript::CheckWallExist(int currentRoomNum, Arrow arrow)
 {
-    if(roomNum % 9 == 0)
-        return false;
+    FRoomInfo *currentRoom = &roomInfo[currentRoomNum];
 
-    if(roomInfo[roomNum - 1].roomType == type)
-        return true;
-    else
-        return false;
+    switch(arrow)
+    {
+        case Arrow::Top:
+            return currentRoom->topWall;
+        break;
+        case Arrow::Bottom:
+            return currentRoom->bottomWall;
+        break;
+        case Arrow::Left:
+            return currentRoom->leftWall;
+        break;
+        case Arrow::Right:
+            return currentRoom->rightWall;
+        break;
+        default:
+            return false;
+        break;
+    }
 }
-
-bool AMainLevelScript::CheckRightRoomIs(int roomNum, RoomType type)
-{
-    if(roomNum % 9 == 8)
-        return false;
-
-    if(roomInfo[roomNum + 1].roomType == type)
-        return true;
-    else
-        return false;
-}
-
-bool AMainLevelScript::CheckIsInBound(int roomX, int roomY)
-{
-    if(roomX < 0 || roomX > 8 || roomY < 0 || roomY > 8)
-        return false;
-    else if(roomX >= minBorder && roomX <= 8 - minBorder && roomY >= minBorder && roomY <= 8 - minBorder)
-        return false;
-    else
-        return true;
-}
-/*
-void AMainLevelScript::SpawnRoom(RoomType roomType, FVector3 spawnLocation, )
-{
-    FTransform SpawnLocation;
-    ABasicRoom *instance = GetWorld()->SpawnActorDeferred<ABasicRoom>(basicRoom, SpawnLocation); //스폰 시작
-    instance->InitialStart(i * 9 + j, true, true, true, true, true, true, true, true); //초기화, 변수할당 등
-    UGameplayStatics::FinishSpawningActor(instance, instance->GetTransform()); //스폰 종료
-}
-*/
-
 
 //리플리케이션 관련 함수
 void AMainLevelScript::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& OutLifetimeProps) const
