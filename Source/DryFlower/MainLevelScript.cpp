@@ -544,5 +544,6 @@ void AMainLevelScript::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& O
     DOREPLIFETIME(AMainLevelScript, currentPlayerSpawn);
     //DOREPLIFETIME(AMainLevelScript, checkedList);
     DOREPLIFETIME(AMainLevelScript, minBorder);
+    DOREPLIFETIME(AMainLevelScript, pawnList);
     DOREPLIFETIME(AMainLevelScript, maxBorder);
 }
