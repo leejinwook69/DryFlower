@@ -86,7 +86,7 @@ public:
 
 	void RoomCreateAlgorithm(int currentRoomNum);
 	void AddAnotherPlayerRoom(int distance);
-	bool CheckIsInBound(int roomIndex, Arrow arrow);
+	bool CheckIsInBound(int roomIndex, Arrow arrow, int minX, int maxX, int minY, int maxY, int width);
 	bool CanMakePlayerSpawnRoom(int currentRoomNum, Arrow arrow, int distance);
 	int GetRoomNum(int currentRoomNum, Arrow arrow);
 	RoomType GetRoomType(int currentRoomNum, Arrow arrow);
@@ -96,4 +96,5 @@ public:
 	bool CheckWallExist(int currentRoomNum, Arrow arrow);
 	void ConnectingTest();
 	int GetDestinationDistance(int currentRoomNum, int destinationRoomNum, int beforeRoomNum);
+	void MakeRestrictedRoom();
 };

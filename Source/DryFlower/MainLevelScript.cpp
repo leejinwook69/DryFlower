@@ -56,13 +56,12 @@ void AMainLevelScript::InitialRoomSetup()
     //-------------------------------------------------
     //복도끼리 막히는 곳 없이 연결되어 있는지 확인하는 알고리즘 (반드시 한 곳은 막혀있어서 필요)
     ConnectingTest();
-    //1. 현재 위치에서 상/하/좌/우 중 랜덤 1개를 선택하여 그곳이 None이면 그 방향으로 문 생성, 전진
-    //2. 리스트에 있는 다른 방들과 비교해서 XY거리가 3 이상인지 체크
-    //2-T. 해당 방을 PlayerSpawn으로 만들고 리스트에 추가한 뒤 이전 방 방향으로 문 생성, 탈출
-    //2-F. 해당 방을 Corrider로 만들고 다른 방 방향으로 문 생성, 전진
-    //3. PlayerSpawn이 12이거나 더이상 진행할 수 없으면 스탑
-    //4. PlayerSpawn이 12가 아닌데 더 진행할 수 없는 상황이면 내부 1칸까지도 돌아다니면서 PlayerSpawn 생성해야함
+    //-------------------------------------------------
+    //연구실 생성 알고리즘
+    MakeRestrictedRoom();
 
+
+    
     //UE_LOG(LogTemp, Log, TEXT("start room index : (%d, %d)"), startRoomNum.X, startRoomNum.Y);
 }
 
@@ -106,7 +105,7 @@ void AMainLevelScript::RoomCreateAlgorithm(int currentRoomNum)
                 break;
             }
 
-            if(CheckIsInBound(currentRoomNum, arrow))
+            if(CheckIsInBound(currentRoomNum, arrow, 0, 8, 0, 8, minBorder))
             {
                 int nextRoomNum = GetRoomNum(currentRoomNum, arrow);
 
@@ -255,7 +254,7 @@ void AMainLevelScript::ConnectingTest()
 
             for(int i = 0; i < 4; i++)
             {
-                if(CheckIsInBound(currentRoomNum, arrow[i]))
+                if(CheckIsInBound(currentRoomNum, arrow[i], 0, 8, 0, 8, minBorder))
                 {
                     int destinationRoomNum = GetRoomNum(currentRoomNum, arrow[i]);
 
@@ -291,12 +290,9 @@ int AMainLevelScript::GetDestinationDistance(int currentRoomNum, int destination
 
     Arrow arrow[4] = {Arrow::Top, Arrow::Bottom, Arrow::Left, Arrow::Right};
 
-    UE_LOG(LogTemp, Log, TEXT("currentNum : %d"), currentRoomNum);
-    UE_LOG(LogTemp, Log, TEXT("destinationNum : %d"), destinationRoomNum);
-
     for(int i = 0; i < 4; i++)
     {
-        if(CheckIsInBound(currentRoomNum, arrow[i]))
+        if(CheckIsInBound(currentRoomNum, arrow[i], 0, 8, 0, 8, minBorder))
         {
             int nextRoomNum = GetRoomNum(currentRoomNum, arrow[i]);
 
@@ -320,7 +316,162 @@ int AMainLevelScript::GetDestinationDistance(int currentRoomNum, int destination
     return 0;
 }
 
-bool AMainLevelScript::CheckIsInBound(int roomIndex, Arrow arrow)
+void AMainLevelScript::MakeRestrictedRoom()
+{
+    TArray<int> makedRestrictedIndex; //1, 2, 3 = col, 4, 5 = row
+    TArray<int> makedRestrictedRoomNumber;
+
+    //바깥 공간에 제한 구역을 전부 만드는 경우의 수는 없을 것 같아서, 방어 처리는 안되어있음
+    for(auto& elem : roomInfo)
+    {
+        Arrow arrow;
+        if(elem.roomType == RoomType::Corrider && elem.maxDoorCount >= 3)
+        {
+            if(elem.topWall == false)
+                arrow = Arrow::Top;
+            else if(elem.bottomWall == false)
+                arrow = Arrow::Bottom;
+            else if(elem.leftWall == false)
+                arrow = Arrow::Left;
+            else
+                arrow = Arrow::Right;
+            
+            FRoomInfo *nextRoom = &roomInfo[GetRoomNum(elem.roomNumber, arrow)];
+            if(nextRoom->roomType == RoomType::Corrider && nextRoom->maxDoorCount >= 2)
+            {
+                if(arrow == Arrow::Top || arrow == Arrow::Bottom)
+                {
+                    while(true)
+                    {
+                        int rand = FMath::RandRange(0, 2);
+                        if(makedRestrictedIndex.Contains(rand))
+                            continue;
+                        else
+                        {
+                            switch(rand)
+                            {
+                                case 0:
+                                    SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01);
+                                break;
+                                case 1:
+                                    SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02);
+                                break;
+                                case 2:
+                                    SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03);
+                                break;
+                                default:
+                                break;
+                            }
+                            makedRestrictedIndex.Add(elem.roomNumber);
+                            makedRestrictedRoomNumber.Add(elem.roomNumber);
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    while(true)
+                    {
+                        int rand = FMath::RandRange(3, 4);
+                        if(makedRestrictedIndex.Contains(rand))
+                            continue;
+                        else
+                        {
+                            switch(rand)
+                            {
+                                case 3:
+                                    SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04);
+                                break;
+                                case 4:
+                                    SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05);
+                                break;
+                                default:
+                                break;
+                            }
+                            makedRestrictedIndex.Add(elem.roomNumber);
+                            makedRestrictedRoomNumber.Add(elem.roomNumber);
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(GetRoomType(elem.roomNumber, Arrow::Top) == RoomType::None)
+                    arrow = Arrow::Top;
+                else if(GetRoomType(elem.roomNumber, Arrow::Bottom) == RoomType::None)
+                    arrow = Arrow::Bottom;
+                else if(GetRoomType(elem.roomNumber, Arrow::Left) == RoomType::None)
+                    arrow = Arrow::Left;
+                else if(GetRoomType(elem.roomNumber, Arrow::Right) == RoomType::None)
+                    arrow = Arrow::Right;
+                else
+                    arrow = Arrow::None;
+
+                if(arrow != Arrow::None)
+                {
+                    if(arrow == Arrow::Top || arrow == Arrow::Bottom)
+                    {
+                        while(true)
+                        {
+                            int rand = FMath::RandRange(0, 2);
+                            if(makedRestrictedIndex.Contains(rand))
+                                continue;
+                            else
+                            {
+                                switch(rand)
+                                {
+                                    case 0:
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01);
+                                    break;
+                                    case 1:
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02);
+                                    break;
+                                    case 2:
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03);
+                                    break;
+                                    default:
+                                    break;
+                                }
+                                makedRestrictedIndex.Add(elem.roomNumber);
+                                makedRestrictedRoomNumber.Add(elem.roomNumber);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        while(true)
+                        {
+                            int rand = FMath::RandRange(3, 4);
+                            if(makedRestrictedIndex.Contains(rand))
+                                continue;
+                            else
+                            {
+                                switch(rand)
+                                {
+                                    case 3:
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04);
+                                    break;
+                                    case 4:
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05);
+                                    break;
+                                    default:
+                                    break;
+                                }
+                                makedRestrictedIndex.Add(elem.roomNumber);
+                                makedRestrictedRoomNumber.Add(elem.roomNumber);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+bool AMainLevelScript::CheckIsInBound(int roomIndex, Arrow arrow, int minX, int maxX, int minY, int maxY, int width)
 {
     if(roomIndex < 0 || roomIndex > 80)
         return false;
@@ -346,9 +497,9 @@ bool AMainLevelScript::CheckIsInBound(int roomIndex, Arrow arrow)
         break;
     }
 
-    if(roomX < 0 || roomX > 8 || roomY < 0 || roomY > 8)
+    if(roomX < minX || roomX > maxX || roomY < minY || roomY > maxY)
         return false;
-    else if(roomX >= minBorder && roomX <= 8 - minBorder && roomY >= minBorder && roomY <= 8 - minBorder)
+    else if(roomX >= minX + width && roomX <= maxX - width && roomY >= minY + width && roomY <= maxY - width)
         return false;
     else
         return true;
@@ -426,6 +577,26 @@ void AMainLevelScript::SetRoomType(int currentRoomNum, Arrow arrow, RoomType roo
             SetRoomWall(currentRoomNum, arrow, false);
             SetRoomDoor(currentRoomNum, arrow, true);
             nextRoom->roomType = RoomType::Corrider;
+        break;
+        case RoomType::Restricted01:
+            currentRoom->roomType = roomType;
+            nextRoom->roomType = roomType;
+        break;
+        case RoomType::Restricted02:
+            currentRoom->roomType = roomType;
+            nextRoom->roomType = roomType;
+        break;
+        case RoomType::Restricted03:
+            currentRoom->roomType = roomType;
+            nextRoom->roomType = roomType;
+        break;
+        case RoomType::Restricted04:
+            currentRoom->roomType = roomType;
+            nextRoom->roomType = roomType;
+        break;
+        case RoomType::Restricted05:
+            currentRoom->roomType = roomType;
+            nextRoom->roomType = roomType;
         break;
         default:
         break;
