@@ -29,19 +29,34 @@ public:
 	TSubclassOf<AActor> enemySpawnRoom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> dangerRoom00;
+	TSubclassOf<AActor> restrictedRoom01_0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> dangerRoom01;
+	TSubclassOf<AActor> restrictedRoom02_0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> dangerRoom02;
+	TSubclassOf<AActor> restrictedRoom03_0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> dangerRoom03;
+	TSubclassOf<AActor> restrictedRoom04_0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> dangerRoom04;
+	TSubclassOf<AActor> restrictedRoom05_0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom01_1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom02_1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom03_1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom04_1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom05_1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TSubclassOf<AActor> escapeRoom;

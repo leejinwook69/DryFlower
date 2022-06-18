@@ -32,11 +32,14 @@ void AMainLevelScript::InitialRoomSetup()
         {
             rand = tempRand;
             roomNum = escapeRoomIndex[rand];
+            SetRoomType(roomNum, Arrow::None, RoomType::Escape);
 
             if(count == 0)
+            {
                 startRoom = roomNum;
+                roomInfo[roomNum].maxDoorCount = 1;
+            }
 
-            SetRoomType(roomNum, Arrow::None, RoomType::Escape);
             count++;
         }
     }
@@ -46,6 +49,7 @@ void AMainLevelScript::InitialRoomSetup()
     SetRoomType(roomNum, Arrow::None, RoomType::EnemySpawn);
     //-------------------------------------------------
     //첫 알고리즘 시작 - 두께 2인 테두리 방에 플레이어 스폰 룸 생성
+    UE_LOG(LogTemp, Log, TEXT("start room index : %d"), startRoom);
     RoomCreateAlgorithm(startRoom);
     //-------------------------------------------------
     //플레이어 스폰이 12개가 안됐을 경우, 추가 스폰 알고리즘
@@ -120,7 +124,6 @@ void AMainLevelScript::RoomCreateAlgorithm(int currentRoomNum)
                         
                         RoomCreateAlgorithm(nextRoomNum);
                     }
-                        
                     break;
                     case RoomType::Escape:
                         if(roomInfo[nextRoomNum].maxDoorCount >= 1)
@@ -354,13 +357,13 @@ void AMainLevelScript::MakeRestrictedRoom()
                                 switch(rand)
                                 {
                                     case 0:
-                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01);
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01_0);
                                     break;
                                     case 1:
-                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02);
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02_0);
                                     break;
                                     case 2:
-                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03);
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03_0);
                                     break;
                                     default:
                                     break;
@@ -383,10 +386,10 @@ void AMainLevelScript::MakeRestrictedRoom()
                                 switch(rand)
                                 {
                                     case 3:
-                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04);
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04_0);
                                     break;
                                     case 4:
-                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05);
+                                        SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05_0);
                                     break;
                                     default:
                                     break;
@@ -400,16 +403,20 @@ void AMainLevelScript::MakeRestrictedRoom()
                 }
                 else
                 {
-                    if(GetRoomType(elem.roomNumber, Arrow::Top) == RoomType::None)
-                        arrow = Arrow::Top;
-                    else if(GetRoomType(elem.roomNumber, Arrow::Bottom) == RoomType::None)
-                        arrow = Arrow::Bottom;
-                    else if(GetRoomType(elem.roomNumber, Arrow::Left) == RoomType::None)
-                        arrow = Arrow::Left;
-                    else if(GetRoomType(elem.roomNumber, Arrow::Right) == RoomType::None)
-                        arrow = Arrow::Right;
-                    else
-                        arrow = Arrow::None;
+                    Arrow arrowArr[4] = {Arrow::Top, Arrow::Bottom, Arrow::Left, Arrow::Right};
+                    arrow = Arrow::None;
+
+                    for(int i = 0; i < 4; i++)
+                    {
+                        if(CheckIsInBound(elem.roomNumber, arrowArr[i], 0, 8, 0, 8, 9))
+                        {
+                            if(GetRoomType(elem.roomNumber, arrowArr[i]) == RoomType::None)
+                            {
+                                arrow = arrowArr[i];
+                                break;
+                            }
+                        }
+                    }
 
                     if(arrow != Arrow::None)
                     {
@@ -425,17 +432,18 @@ void AMainLevelScript::MakeRestrictedRoom()
                                     switch(rand)
                                     {
                                         case 0:
-                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01);
+                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01_0);
                                         break;
                                         case 1:
-                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02);
+                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02_0);
                                         break;
                                         case 2:
-                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03);
+                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03_0);
                                         break;
                                         default:
                                         break;
                                     }
+                                    UE_LOG(LogTemp, Log, TEXT("selected room index : %d"), elem.roomNumber);
                                     makedRestrictedIndex.Add(elem.roomNumber);
                                     makedRestrictedRoomNumber.Add(elem.roomNumber);
                                     break;
@@ -454,14 +462,15 @@ void AMainLevelScript::MakeRestrictedRoom()
                                     switch(rand)
                                     {
                                         case 3:
-                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04);
+                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04_0);
                                         break;
                                         case 4:
-                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05);
+                                            SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05_0);
                                         break;
                                         default:
                                         break;
                                     }
+                                    UE_LOG(LogTemp, Log, TEXT("selected room index : %d"), elem.roomNumber);
                                     makedRestrictedIndex.Add(elem.roomNumber);
                                     makedRestrictedRoomNumber.Add(elem.roomNumber);
                                     break;
@@ -471,7 +480,6 @@ void AMainLevelScript::MakeRestrictedRoom()
                     }
                 }
             }
-            
         }
     }
 }
@@ -579,29 +587,70 @@ void AMainLevelScript::SetRoomType(int currentRoomNum, Arrow arrow, RoomType roo
             checkedList.Add(nextRoom);
         break;
         case RoomType::Corrider:
-            SetRoomWall(currentRoomNum, arrow, false);
+            if(currentRoom->roomType != RoomType::Escape)
+                SetRoomWall(currentRoomNum, arrow, false);
             SetRoomDoor(currentRoomNum, arrow, true);
             nextRoom->roomType = RoomType::Corrider;
         break;
-        case RoomType::Restricted01:
-            currentRoom->roomType = roomType;
-            nextRoom->roomType = roomType;
+        case RoomType::Restricted01_0:
+            if(currentRoom->roomNumber < nextRoom->roomNumber)
+            {
+                currentRoom->roomType = roomType;
+                nextRoom->roomType = RoomType::Restricted01_1;
+            }
+            else
+            {
+                nextRoom->roomType = roomType;
+                currentRoom->roomType = RoomType::Restricted01_1;
+            }
         break;
-        case RoomType::Restricted02:
-            currentRoom->roomType = roomType;
-            nextRoom->roomType = roomType;
+        case RoomType::Restricted02_0:
+            if(currentRoom->roomNumber < nextRoom->roomNumber)
+            {
+                currentRoom->roomType = roomType;
+                nextRoom->roomType = RoomType::Restricted02_1;
+            }
+            else
+            {
+                nextRoom->roomType = roomType;
+                currentRoom->roomType = RoomType::Restricted02_1;
+            }
         break;
-        case RoomType::Restricted03:
-            currentRoom->roomType = roomType;
-            nextRoom->roomType = roomType;
+        case RoomType::Restricted03_0:
+            if(currentRoom->roomNumber < nextRoom->roomNumber)
+            {
+                currentRoom->roomType = roomType;
+                nextRoom->roomType = RoomType::Restricted03_1;
+            }
+            else
+            {
+                nextRoom->roomType = roomType;
+                currentRoom->roomType = RoomType::Restricted03_1;
+            }
         break;
-        case RoomType::Restricted04:
-            currentRoom->roomType = roomType;
-            nextRoom->roomType = roomType;
+        case RoomType::Restricted04_0:
+            if(currentRoom->roomNumber < nextRoom->roomNumber)
+            {
+                currentRoom->roomType = roomType;
+                nextRoom->roomType = RoomType::Restricted04_1;
+            }
+            else
+            {
+                nextRoom->roomType = roomType;
+                currentRoom->roomType = RoomType::Restricted04_1;
+            }
         break;
-        case RoomType::Restricted05:
-            currentRoom->roomType = roomType;
-            nextRoom->roomType = roomType;
+        case RoomType::Restricted05_0:
+            if(currentRoom->roomNumber < nextRoom->roomNumber)
+            {
+                currentRoom->roomType = roomType;
+                nextRoom->roomType = RoomType::Restricted05_1;
+            }
+            else
+            {
+                nextRoom->roomType = roomType;
+                currentRoom->roomType = RoomType::Restricted05_1;
+            }
         break;
         default:
         break;
@@ -635,15 +684,18 @@ void AMainLevelScript::SetRoomDoor(int currentRoomNum, Arrow arrow, bool active)
         break;
     }
 
-    if(active)
+    if(arrow != Arrow::None)
     {
-        currentRoom->maxDoorCount--;
-        nextRoom->maxDoorCount--;
-    }
-    else
-    {
-        currentRoom->maxDoorCount++;
-        nextRoom->maxDoorCount++;
+        if(active)
+        {
+            currentRoom->maxDoorCount--;
+            nextRoom->maxDoorCount--;
+        }
+        else
+        {
+            currentRoom->maxDoorCount++;
+            nextRoom->maxDoorCount++;
+        }
     }
 }
 
@@ -706,11 +758,16 @@ void AMainLevelScript::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& O
     DOREPLIFETIME(AMainLevelScript, corriderRoom);
     DOREPLIFETIME(AMainLevelScript, playerSpawnRoom);
     DOREPLIFETIME(AMainLevelScript, enemySpawnRoom);
-    DOREPLIFETIME(AMainLevelScript, dangerRoom00);
-    DOREPLIFETIME(AMainLevelScript, dangerRoom01);
-    DOREPLIFETIME(AMainLevelScript, dangerRoom02);
-    DOREPLIFETIME(AMainLevelScript, dangerRoom03);
-    DOREPLIFETIME(AMainLevelScript, dangerRoom04);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom01_0);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom02_0);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom03_0);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom04_0);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom05_0);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom01_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom02_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom03_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom04_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom05_1);
     DOREPLIFETIME(AMainLevelScript, escapeRoom);
     DOREPLIFETIME(AMainLevelScript, officeRoom);
     DOREPLIFETIME(AMainLevelScript, labatoryRoom);
