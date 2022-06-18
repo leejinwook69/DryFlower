@@ -16,19 +16,18 @@ AMyCharacter::AMyCharacter()
 {
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	// Ä¸ï¿½ï¿½ ï¿½Ý¸ï¿½ï¿½ï¿½ Å©ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Ä¸½¶ ÄÄÆ÷³ÍÆ® Å©±â ¼³Á¤
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
-	// ï¿½ï¿½Æ®ï¿½Ñ·ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½Í´ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-	// Ä³ï¿½ï¿½ï¿½Í°ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Öµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ð´ï¿½
+	// Á¶ÀÛÀ¸·Î ÀÎÇØ Ä«¸Þ¶ó°¡ µ¹Áö ¾Êµµ·Ï ¼³Á¤
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½
+	// Ä³¸¯ÅÍ°¡ ÀÔ·Â ¹æÇâ µû¶ó ¿òÁ÷ÀÌ°Ô ¼³Á¤
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
-	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ (ï¿½æµ¹ï¿½ï¿½ ï¿½ß»ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ ï¿½ï¿½)
+	// Ä«¸Þ¶óºÕ À§Ä¡ ¼³Á¤
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 900.0f;
@@ -39,7 +38,7 @@ AMyCharacter::AMyCharacter()
 	CameraBoom->bInheritRoll = false;
 
 
-	// Ä³ï¿½ï¿½ï¿½Í¸ï¿½ ï¿½ï¿½ï¿½ï¿½Ù´ï¿½ Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Ä«¸Þ¶ó ¼³Á¤ ÈÄ Ä«¸Þ¶óºÕ¿¡ ºÙÀÓ
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = false;
@@ -57,7 +56,7 @@ AMyCharacter::AMyCharacter()
 void AMyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 }
 
 // Called every frame
@@ -76,8 +75,10 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
 
 	PlayerInputComponent->BindAction("Make", IE_Pressed, this, &AMyCharacter::Make);
-	PlayerInputComponent->BindAction("Die", IE_Pressed, this, &AMyCharacter::Die); //ï¿½Ó½ï¿½ï¿½ï¿½
-	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyCharacter::Attack);
+
+	//PlayerInputComponent->BindAction("Die", IE_Pressed, this, &AMyCharacter::Die);
+	//PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AMyCharacter::Attack);
+
 }
 
 void AMyCharacter::MoveRight(float Value)
@@ -87,7 +88,7 @@ void AMyCharacter::MoveRight(float Value)
 		const FRotator YawRotation(0, Controller->GetControlRotation().Yaw, 0);
 		const FVector Direction = UKismetMathLibrary::GetRightVector(YawRotation);
 		AddMovementInput(Direction, Value);
-		if (Value != 0.f)
+		if (Value != 0.f) // Ä«¸Þ¶ó ¿ø·¡ À§Ä¡·Î µ¹¸®±â
 		{
 			CameraBoom->TargetArmLength = 900.0f;
 			CameraBoom->SetRelativeRotation(FRotator(-89.f, -90.f, 0.f));
@@ -113,49 +114,37 @@ void AMyCharacter::MoveForward(float Value)
 	}
 }
 
-void AMyCharacter::Make() //ï¿½ï¿½ï¿½ß¿ï¿½ Searchï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+void AMyCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	//ï¿½ï¿½Ïµï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½
-	if (MakeAnim)
+	//UE_LOG(LogTemp, Log, TEXT("can"));
+	NowCanSearch = true;
+}
+
+void AMyCharacter::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	//UE_LOG(LogTemp, Log, TEXT("cannot"));
+	NowCanSearch = false;
+}
+
+void AMyCharacter::Make() //³ªÁß¿¡ Search·Î º¯°æ
+{
+	//µî·ÏµÈ ¸ùÅ¸ÁÖ Àç»ý
+	if (NowCanSearch == true)
 	{
-		//ï¿½ï¿½ï¿½Ô³ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Î±ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½
+		// ¼­Ä¡ °¡´ÉÇÑ »óÈ²ÀÌ¸é ¸ùÅ¸ÁÖ Àç»ý
 		PlayAnimMontage(MakeAnim, 1.f, FName("start_1"));
 
 		CameraBoom->TargetArmLength = 400.0f;
 		CameraBoom->SetRelativeRotation(FRotator(-60.f, -90.f, 0.f));
 	}
-
-	/*
-	//ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¿ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ì°ï¿½ ï¿½Ï±ï¿½
-	//MakeCheck = true;
-
-	GetWorld()->GetTimerManager().SetTimer(WaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			// MakeTime(ï¿½Ã°ï¿½)ï¿½ï¿½ ï¿½Æ·ï¿½ ï¿½Úµï¿½ ï¿½ï¿½ï¿½ï¿½
-
-			MakeCheck = false;
-
-		}), MakeTime, false);
-	*/
 }
 
-void AMyCharacter::Attack() //ï¿½ï¿½ï¿½Î¸ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ ï¿½Ûµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
-{
-	//ï¿½ï¿½Ïµï¿½ ï¿½ï¿½Å¸ï¿½ï¿½ ï¿½ï¿½ï¿½
-	if (IsAttacking == false)
-	{
-		//ï¿½ï¿½ï¿½Ô³ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Î±ï¿½ ï¿½Þ½ï¿½ï¿½ï¿½
-		//UE_LOG(LogTemp, Log, TEXT("Log Message"));
-		PlayAnimMontage(MakeAnim, 1.f, FName("start_1"));
-	}
 
-}
-
-void AMyCharacter::Die() //Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½
+void AMyCharacter::Die()
 {
 	//UE_LOG(LogTemp, Log, TEXT("Log Message"));
 	DieCheck = true;
-	//Ä³ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã¹Ä·ï¿½ï¿½ï¿½Æ®
+	//Ä³¸¯ÅÍ ·¡±×µ¹È­
 	GetMesh()->SetCollisionProfileName(TEXT("Ragdoll"));
 	GetMesh()->SetSimulatePhysics(true);
 }
