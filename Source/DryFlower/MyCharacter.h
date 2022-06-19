@@ -45,12 +45,12 @@ public:
 	void MoveRight(float value);
 	void MoveForward(float value);
 
-	UFUNCTION(Reliable, Server, WithValidation)
+	UFUNCTION(Reliable, Server, WithValidation, BlueprintCallable, Category = MakeServer)
 	void MakeServer(); 
 	void MakeServer_Implementation();
 	bool MakeServer_Validate();
 
-	UFUNCTION(Reliable, Server, WithValidation)
+	UFUNCTION(Reliable, Server, WithValidation, BlueprintCallable, Category = DieServer)
 	void DieServer();
 	void DieServer_Implementation();
 	bool DieServer_Validate();
@@ -59,7 +59,7 @@ public:
 	void Make(); // F 눌렀을 때 실행
 	void Make_Implementation();
 
-	UFUNCTION(Reliable, NetMulticast, BlueprintCallable, Category = Die)
+	UFUNCTION(Reliable, NetMulticast)
 	void Die(); // 지금은 임시로 G 눌렀을 때 실행			
 	void Die_Implementation();		
 			
