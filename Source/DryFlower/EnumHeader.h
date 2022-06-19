@@ -43,9 +43,15 @@ enum class RoomType : uint8
 	Restricted05_0	UMETA(DisplayName = "Restricted05_0"),
 	Restricted05_1	UMETA(DisplayName = "Restricted05_1"),
 	Escape			UMETA(DisplayName = "Escape"),
-	Office			UMETA(DisplayName = "Office"),
-	Labatory		UMETA(DisplayName = "Labatory"),
-	Bathroom		UMETA(DisplayName = "Bathroom"),
+	Office_0		UMETA(DisplayName = "Office_0"),
+	Office_1		UMETA(DisplayName = "Office_1"),
+	Office_2		UMETA(DisplayName = "Office_2"),
+	Labatory_0		UMETA(DisplayName = "Labatory_0"),
+	Labatory_1		UMETA(DisplayName = "Labatory_1"),
+	Labatory_2		UMETA(DisplayName = "Labatory_2"),
+	Labatory_3		UMETA(DisplayName = "Labatory_3"),
+	Lounge_0		UMETA(DisplayName = "Lounge_0"),
+	Lounge_1		UMETA(DisplayName = "Lounge_1"),
 };
 
 UENUM()

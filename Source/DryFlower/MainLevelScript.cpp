@@ -368,7 +368,7 @@ void AMainLevelScript::MakeRestrictedRoom()
                                     default:
                                     break;
                                 }
-                                makedRestrictedIndex.Add(elem.roomNumber);
+                                makedRestrictedIndex.Add(rand);
                                 makedRestrictedRoomNumber.Add(elem.roomNumber);
                                 break;
                             }
@@ -394,7 +394,7 @@ void AMainLevelScript::MakeRestrictedRoom()
                                     default:
                                     break;
                                 }
-                                makedRestrictedIndex.Add(elem.roomNumber);
+                                makedRestrictedIndex.Add(rand);
                                 makedRestrictedRoomNumber.Add(elem.roomNumber);
                                 break;
                             }
@@ -443,8 +443,7 @@ void AMainLevelScript::MakeRestrictedRoom()
                                         default:
                                         break;
                                     }
-                                    UE_LOG(LogTemp, Log, TEXT("selected room index : %d"), elem.roomNumber);
-                                    makedRestrictedIndex.Add(elem.roomNumber);
+                                    makedRestrictedIndex.Add(rand);
                                     makedRestrictedRoomNumber.Add(elem.roomNumber);
                                     break;
                                 }
@@ -470,8 +469,7 @@ void AMainLevelScript::MakeRestrictedRoom()
                                         default:
                                         break;
                                     }
-                                    UE_LOG(LogTemp, Log, TEXT("selected room index : %d"), elem.roomNumber);
-                                    makedRestrictedIndex.Add(elem.roomNumber);
+                                    makedRestrictedIndex.Add(rand);
                                     makedRestrictedRoomNumber.Add(elem.roomNumber);
                                     break;
                                 }
@@ -481,6 +479,42 @@ void AMainLevelScript::MakeRestrictedRoom()
                 }
             }
         }
+    }
+
+    //가장 큰 부피를 차지하는 연구소 방 만들기
+    while(true)
+    {
+        int rand = FMath::RandRange(20, 50);
+
+        if(GetRoomType(rand, Arrow::None) != RoomType::None)
+            continue;
+        
+        if(CheckIsInBound(rand, Arrow::None, 2, 5, 2, 5, 1) == false)
+            continue;
+
+        if(GetRoomType(rand, Arrow::Right) != RoomType::None || GetRoomType(rand, Arrow::Bottom) != RoomType::None || 
+                GetRoomType(GetRoomNum(rand, Arrow::Bottom), Arrow::Right) != RoomType::None)
+            continue;
+        
+        SetRoomType(rand, Arrow::None, RoomType::Labatory_0);
+        break;
+    }
+
+    //제한구역 1, 2, 3 중 안만들어진 방 만들기
+    for(int i = 1; i <= 3; i++)
+    {
+        if(makedRestrictedIndex.Contains(i))
+            continue;
+
+        
+    }
+
+    //제한구역 4, 5 중 안만들어진 방 만들기
+    for(int i = 4; i <= 5; i++)
+    {
+        if(makedRestrictedIndex.Contains(i))
+            continue;
+
     }
 }
 
@@ -652,6 +686,20 @@ void AMainLevelScript::SetRoomType(int currentRoomNum, Arrow arrow, RoomType roo
                 currentRoom->roomType = RoomType::Restricted05_1;
             }
         break;
+        case RoomType::Labatory_0:
+            currentRoom->roomType = roomType;
+            SetRoomWall(currentRoom->roomNumber, Arrow::Right, false);
+            SetRoomWall(currentRoom->roomNumber, Arrow::Bottom, false);
+            nextRoom = &roomInfo[currentRoom->roomNumber + 1];
+            nextRoom->roomType = RoomType::Labatory_1;
+            SetRoomWall(nextRoom->roomNumber, Arrow::Bottom, false);
+            nextRoom = &roomInfo[currentRoom->roomNumber + 9];
+            nextRoom->roomType = RoomType::Labatory_2;
+            SetRoomWall(nextRoom->roomNumber, Arrow::Right, false);
+            nextRoom = &roomInfo[nextRoom->roomNumber + 1];
+            nextRoom->roomType = RoomType::Labatory_3;
+            //문 만드는건 제한구역 전부 만들어진 다음에 해야할듯
+        break;
         default:
         break;
     }
@@ -759,19 +807,25 @@ void AMainLevelScript::GetLifetimeReplicatedProps(TArray< FLifetimeProperty >& O
     DOREPLIFETIME(AMainLevelScript, playerSpawnRoom);
     DOREPLIFETIME(AMainLevelScript, enemySpawnRoom);
     DOREPLIFETIME(AMainLevelScript, restrictedRoom01_0);
-    DOREPLIFETIME(AMainLevelScript, restrictedRoom02_0);
-    DOREPLIFETIME(AMainLevelScript, restrictedRoom03_0);
-    DOREPLIFETIME(AMainLevelScript, restrictedRoom04_0);
-    DOREPLIFETIME(AMainLevelScript, restrictedRoom05_0);
     DOREPLIFETIME(AMainLevelScript, restrictedRoom01_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom02_0);
     DOREPLIFETIME(AMainLevelScript, restrictedRoom02_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom03_0);
     DOREPLIFETIME(AMainLevelScript, restrictedRoom03_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom04_0);
     DOREPLIFETIME(AMainLevelScript, restrictedRoom04_1);
+    DOREPLIFETIME(AMainLevelScript, restrictedRoom05_0);
     DOREPLIFETIME(AMainLevelScript, restrictedRoom05_1);
     DOREPLIFETIME(AMainLevelScript, escapeRoom);
-    DOREPLIFETIME(AMainLevelScript, officeRoom);
-    DOREPLIFETIME(AMainLevelScript, labatoryRoom);
-    DOREPLIFETIME(AMainLevelScript, bathRoom);
+    DOREPLIFETIME(AMainLevelScript, officeRoom_0);
+    DOREPLIFETIME(AMainLevelScript, officeRoom_1);
+    DOREPLIFETIME(AMainLevelScript, officeRoom_2);
+    DOREPLIFETIME(AMainLevelScript, labatoryRoom_0);
+    DOREPLIFETIME(AMainLevelScript, labatoryRoom_1);
+    DOREPLIFETIME(AMainLevelScript, labatoryRoom_2);
+    DOREPLIFETIME(AMainLevelScript, labatoryRoom_3);
+    DOREPLIFETIME(AMainLevelScript, loungeRoom_0);
+    DOREPLIFETIME(AMainLevelScript, loungeRoom_1);
     DOREPLIFETIME(AMainLevelScript, roomInfo);
     DOREPLIFETIME(AMainLevelScript, maxPlayerSpawn);
     DOREPLIFETIME(AMainLevelScript, currentPlayerSpawn);

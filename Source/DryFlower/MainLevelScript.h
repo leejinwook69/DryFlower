@@ -30,31 +30,22 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TSubclassOf<AActor> restrictedRoom01_0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> restrictedRoom02_0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> restrictedRoom03_0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> restrictedRoom04_0;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> restrictedRoom05_0;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TSubclassOf<AActor> restrictedRoom01_1;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom02_0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TSubclassOf<AActor> restrictedRoom02_1;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom03_0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TSubclassOf<AActor> restrictedRoom03_1;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom04_0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TSubclassOf<AActor> restrictedRoom04_1;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> restrictedRoom05_0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TSubclassOf<AActor> restrictedRoom05_1;
 
@@ -62,13 +53,25 @@ public:
 	TSubclassOf<AActor> escapeRoom;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> officeRoom;
+	TSubclassOf<AActor> officeRoom_0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> officeRoom_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> officeRoom_2;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> labatoryRoom;
+	TSubclassOf<AActor> labatoryRoom_0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> labatoryRoom_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> labatoryRoom_2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> labatoryRoom_3;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
-	TSubclassOf<AActor> bathRoom;
+	TSubclassOf<AActor> loungeRoom_0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
+	TSubclassOf<AActor> loungeRoom_1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RoomActorsRef, Replicated)
 	TArray<FRoomInfo> roomInfo;
