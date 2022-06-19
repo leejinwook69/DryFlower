@@ -45,10 +45,26 @@ public:
 	void MoveRight(float value);
 	void MoveForward(float value);
 
+	UFUNCTION(Reliable, Server, WithValidation)
+	void MakeServer(); 
+	void MakeServer_Implementation();
+	bool MakeServer_Validate();
 
+	UFUNCTION(Reliable, Server, WithValidation)
+	void DieServer();
+	void DieServer_Implementation();
+	bool DieServer_Validate();
+	
+	UFUNCTION(Reliable, NetMulticast)
 	void Make(); // F 눌렀을 때 실행
+	void Make_Implementation();
 
-	/*
+	UFUNCTION(Reliable, NetMulticast, BlueprintCallable, Category = Die)
+	void Die(); // 지금은 임시로 G 눌렀을 때 실행			
+	void Die_Implementation();		
+			
+
+    /*
 	FTimerHandle WaitHandle; // 딜레이 주는 시간
 	float MakeTime = 2.0f; // 2초
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = MakeSomething, meta = (AllowPrivateAccess = "true"))
@@ -59,8 +75,7 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack, meta = (AllowPrivateAccess = "true"))
 	//	bool IsAttacking = false;
 
-	UFUNCTION(BlueprintCallable, Category = Die)
-	void Die(); // 지금은 임시로 G 눌렀을 때 실행
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Die, meta = (AllowPrivateAccess = "true"))
 	bool DieCheck = false;

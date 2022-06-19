@@ -126,7 +126,19 @@ void AMyCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 	NowCanSearch = false;
 }
 
-void AMyCharacter::Make() //나중에 Search로 변경
+
+//////////////////////////////////////// 멀티작업
+
+
+void AMyCharacter::MakeServer_Implementation()
+{
+	Make();
+}
+bool AMyCharacter::MakeServer_Validate()
+{
+	return true;
+}
+void AMyCharacter::Make_Implementation() //나중에 Search로 변경
 {
 	//등록된 몽타주 재생
 	if (NowCanSearch == true)
@@ -139,8 +151,15 @@ void AMyCharacter::Make() //나중에 Search로 변경
 	}
 }
 
-
-void AMyCharacter::Die()
+void AMyCharacter::DieServer_Implementation()
+{
+	Die();
+}
+bool AMyCharacter::DieServer_Validate()
+{
+	return true;
+}
+void AMyCharacter::Die_Implementation()
 {
 	//UE_LOG(LogTemp, Log, TEXT("Log Message"));
 	DieCheck = true;
