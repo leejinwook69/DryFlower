@@ -349,20 +349,20 @@ void AMainLevelScript::MakeRestrictedRoom()
                     {
                         while(true)
                         {
-                            int rand = FMath::RandRange(0, 2);
+                            int rand = FMath::RandRange(1, 3);
                             if(makedRestrictedIndex.Contains(rand))
                                 continue;
                             else
                             {
                                 switch(rand)
                                 {
-                                    case 0:
+                                    case 1:
                                         SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01_0);
                                     break;
-                                    case 1:
+                                    case 2:
                                         SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02_0);
                                     break;
-                                    case 2:
+                                    case 3:
                                         SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03_0);
                                     break;
                                     default:
@@ -378,17 +378,17 @@ void AMainLevelScript::MakeRestrictedRoom()
                     {
                         while(true)
                         {
-                            int rand = FMath::RandRange(3, 4);
+                            int rand = FMath::RandRange(4, 5);
                             if(makedRestrictedIndex.Contains(rand))
                                 continue;
                             else
                             {
                                 switch(rand)
                                 {
-                                    case 3:
+                                    case 4:
                                         SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04_0);
                                     break;
-                                    case 4:
+                                    case 5:
                                         SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05_0);
                                     break;
                                     default:
@@ -424,20 +424,20 @@ void AMainLevelScript::MakeRestrictedRoom()
                         {
                             while(true)
                             {
-                                int rand = FMath::RandRange(0, 2);
+                                int rand = FMath::RandRange(1, 3);
                                 if(makedRestrictedIndex.Contains(rand))
                                     continue;
                                 else
                                 {
                                     switch(rand)
                                     {
-                                        case 0:
+                                        case 1:
                                             SetRoomType(elem.roomNumber, arrow, RoomType::Restricted01_0);
                                         break;
-                                        case 1:
+                                        case 2:
                                             SetRoomType(elem.roomNumber, arrow, RoomType::Restricted02_0);
                                         break;
-                                        case 2:
+                                        case 3:
                                             SetRoomType(elem.roomNumber, arrow, RoomType::Restricted03_0);
                                         break;
                                         default:
@@ -453,17 +453,17 @@ void AMainLevelScript::MakeRestrictedRoom()
                         {
                             while(true)
                             {
-                                int rand = FMath::RandRange(3, 4);
+                                int rand = FMath::RandRange(4, 5);
                                 if(makedRestrictedIndex.Contains(rand))
                                     continue;
                                 else
                                 {
                                     switch(rand)
                                     {
-                                        case 3:
+                                        case 4:
                                             SetRoomType(elem.roomNumber, arrow, RoomType::Restricted04_0);
                                         break;
-                                        case 4:
+                                        case 5:
                                             SetRoomType(elem.roomNumber, arrow, RoomType::Restricted05_0);
                                         break;
                                         default:
@@ -506,7 +506,34 @@ void AMainLevelScript::MakeRestrictedRoom()
         if(makedRestrictedIndex.Contains(i))
             continue;
 
-        
+        while(true)
+        {
+            int rand = FMath::RandRange(20, 60);
+
+            if(GetRoomType(rand, Arrow::None) != RoomType::None)
+                continue;
+
+            if(GetRoomType(rand, Arrow::Bottom) != RoomType::None)
+                continue;
+            
+            switch(i)
+            {
+                case 1:
+                    SetRoomType(rand, Arrow::Bottom, RoomType::Restricted01_0);
+                break;
+                case 2:
+                    SetRoomType(rand, Arrow::Bottom, RoomType::Restricted02_0);
+                break;
+                case 3:
+                    SetRoomType(rand, Arrow::Bottom, RoomType::Restricted03_0);
+                break;
+                default:
+                break;
+            }
+            makedRestrictedIndex.Add(i);
+            makedRestrictedRoomNumber.Add(rand);
+            break;
+        }
     }
 
     //제한구역 4, 5 중 안만들어진 방 만들기
@@ -515,6 +542,76 @@ void AMainLevelScript::MakeRestrictedRoom()
         if(makedRestrictedIndex.Contains(i))
             continue;
 
+        while(true)
+        {
+            int rand = FMath::RandRange(20, 60);
+
+            if(GetRoomType(rand, Arrow::None) != RoomType::None)
+                continue;
+
+            if(GetRoomType(rand, Arrow::Right) != RoomType::None)
+                continue;
+            
+            switch(i)
+            {
+                case 4:
+                    SetRoomType(rand, Arrow::Right, RoomType::Restricted04_0);
+                break;
+                case 5:
+                    SetRoomType(rand, Arrow::Right, RoomType::Restricted05_0);
+                break;
+                default:
+                break;
+            }
+            makedRestrictedIndex.Add(i);
+            makedRestrictedRoomNumber.Add(rand);
+            break;
+        }
+    }
+
+    //제한구역 순회하면서 문 / 벽 만들어주기
+    int count = 0;
+    for(auto elem : makedRestrictedRoomNumber)
+    {
+        UE_LOG(LogTemp, Log, TEXT("###makedRestRoomNum[%d] : %d, index : %d"), count, elem, makedRestrictedIndex[count]);
+        RoomType roomType = GetRoomType(elem, Arrow::None);
+
+        if(makedRestrictedIndex[count] <= 3)
+        {
+            if(roomType == RoomType::Restricted01_0 || roomType == RoomType::Restricted02_0 || roomType == RoomType::Restricted03_0)
+                SetRestrictedWallAndDoor(elem, elem + 9, Arrow::Bottom);
+            else
+                SetRestrictedWallAndDoor(elem, elem - 9, Arrow::Top);
+        }
+        else
+        {
+            if(roomType == RoomType::Restricted04_0 || roomType == RoomType::Restricted05_0)
+                SetRestrictedWallAndDoor(elem, elem + 1, Arrow::Right);
+            else
+                SetRestrictedWallAndDoor(elem, elem - 1, Arrow::Left);
+        }
+        count++;
+    }
+
+    //마지막으로 순회하면서 남은 공간 전부 복도로 만들기, 벽 뚫고 문 만들기
+    for(auto& elem : roomInfo)
+    {
+        if(elem.roomType == RoomType::None)
+        {
+            Arrow arrowArr[4] = {Arrow::Top, Arrow::Bottom, Arrow::Left, Arrow::Right};
+            
+            SetRoomType(elem.roomNumber, Arrow::None, RoomType::Corrider);
+            for(int i = 0; i < 4; i++)
+            {
+                RoomType roomType = GetRoomType(elem.roomNumber, arrowArr[i]);
+                if(roomType == RoomType::Corrider)
+                    SetRoomWall(elem.roomNumber, arrowArr[i], false);
+                else if(roomType == RoomType::EnemySpawn || roomType == RoomType::Labatory_0 || roomType == RoomType::Labatory_1 || roomType == RoomType::Labatory_2 ||
+                            roomType == RoomType::Labatory_3)
+                    SetRoomDoor(elem.roomNumber, arrowArr[i], true);
+            }
+
+        }
     }
 }
 
@@ -705,6 +802,86 @@ void AMainLevelScript::SetRoomType(int currentRoomNum, Arrow arrow, RoomType roo
     }
 }
 
+void AMainLevelScript::SetRestrictedWallAndDoor(int currentRoomNum, int nextRoomNum, Arrow arrow)
+{
+    switch(arrow)
+    {
+        case Arrow::Top:
+            SetRoomWall(currentRoomNum, Arrow::Top, false);
+            SetRoomWall(currentRoomNum, Arrow::Bottom, true);
+            SetRoomWall(currentRoomNum, Arrow::Left, true);
+            SetRoomWall(currentRoomNum, Arrow::Right, true);
+
+            SetRoomWall(nextRoomNum, Arrow::Top, true);
+            SetRoomWall(nextRoomNum, Arrow::Bottom, false);
+            SetRoomWall(nextRoomNum, Arrow::Left, true);
+            SetRoomWall(nextRoomNum, Arrow::Right, true);
+        break;
+        case Arrow::Bottom:
+            SetRoomWall(currentRoomNum, Arrow::Top, true);
+            SetRoomWall(currentRoomNum, Arrow::Bottom, false);
+            SetRoomWall(currentRoomNum, Arrow::Left, true);
+            SetRoomWall(currentRoomNum, Arrow::Right, true);
+
+            SetRoomWall(nextRoomNum, Arrow::Top, false);
+            SetRoomWall(nextRoomNum, Arrow::Bottom, true);
+            SetRoomWall(nextRoomNum, Arrow::Left, true);
+            SetRoomWall(nextRoomNum, Arrow::Right, true);
+        break;
+        case Arrow::Left:
+            SetRoomWall(currentRoomNum, Arrow::Top, true);
+            SetRoomWall(currentRoomNum, Arrow::Bottom, true);
+            SetRoomWall(currentRoomNum, Arrow::Left, false);
+            SetRoomWall(currentRoomNum, Arrow::Right, true);
+
+            SetRoomWall(nextRoomNum, Arrow::Top, true);
+            SetRoomWall(nextRoomNum, Arrow::Bottom, true);
+            SetRoomWall(nextRoomNum, Arrow::Left, true);
+            SetRoomWall(nextRoomNum, Arrow::Right, false);
+        break;
+        case Arrow::Right:
+            SetRoomWall(currentRoomNum, Arrow::Top, true);
+            SetRoomWall(currentRoomNum, Arrow::Bottom, true);
+            SetRoomWall(currentRoomNum, Arrow::Left, true);
+            SetRoomWall(currentRoomNum, Arrow::Right, false);
+
+            SetRoomWall(nextRoomNum, Arrow::Top, true);
+            SetRoomWall(nextRoomNum, Arrow::Bottom, true);
+            SetRoomWall(nextRoomNum, Arrow::Left, false);
+            SetRoomWall(nextRoomNum, Arrow::Right, true);
+        break;
+        default:
+        break;
+    }
+
+    Arrow arrowArr[4] = {Arrow::Top, Arrow::Bottom, Arrow::Left, Arrow::Right};
+    for(int i = 0; i < 4; i++)
+    {
+        if(CheckIsInBound(currentRoomNum, arrowArr[i], 0, 8, 0, 8, 9) == false)
+            continue;
+
+        RoomType currentRoomType = GetRoomType(currentRoomNum, arrowArr[i]);
+        if(currentRoomType == RoomType::Corrider || /*currentRoomType == RoomType::Labatory ||*/ currentRoomType == RoomType::EnemySpawn || currentRoomType == RoomType::None)
+        {
+            SetRoomDoor(currentRoomNum, arrowArr[i], true);
+            break;
+        }
+    }
+
+    for(int i = 0; i < 4; i++)
+    {
+        if(CheckIsInBound(nextRoomNum, arrowArr[i], 0, 8, 0, 8, 9) == false)
+            continue;
+
+        RoomType nextRoomType = GetRoomType(nextRoomNum, arrowArr[i]);
+        if(nextRoomType == RoomType::Corrider || /*nextRoomType == RoomType::Labatory ||*/ nextRoomType == RoomType::EnemySpawn || nextRoomType == RoomType::None)
+        {
+            SetRoomDoor(nextRoomNum, arrowArr[i], true);
+            break;
+        }
+    }
+}
+
 void AMainLevelScript::SetRoomDoor(int currentRoomNum, Arrow arrow, bool active)
 {
     FRoomInfo *currentRoom = &roomInfo[currentRoomNum];
@@ -749,6 +926,9 @@ void AMainLevelScript::SetRoomDoor(int currentRoomNum, Arrow arrow, bool active)
 
 void AMainLevelScript::SetRoomWall(int currentRoomNum, Arrow arrow, bool active)
 {
+    if(CheckIsInBound(currentRoomNum, arrow, 0, 8, 0, 8, 9) == false)
+        return;
+
     FRoomInfo *currentRoom = &roomInfo[currentRoomNum];
     FRoomInfo *nextRoom = &roomInfo[GetRoomNum(currentRoomNum, arrow)];
 

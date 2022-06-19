@@ -115,4 +115,5 @@ public:
 	void ConnectingTest();
 	int GetDestinationDistance(int currentRoomNum, int destinationRoomNum, int beforeRoomNum);
 	void MakeRestrictedRoom();
+	void SetRestrictedWallAndDoor(int currentRoomNum, int nextRoomNum, Arrow arrow);
 };
